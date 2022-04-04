@@ -1,5 +1,5 @@
 **/.DS_Store
 **/coverage.out
-cache/
+cache/testdata/tmp/
 dist/
 

@@ -3,7 +3,6 @@ package webdavfilesystem
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path"
 	"strings"
@@ -32,11 +31,22 @@ func (w *WebDAV) Put(fileName string, folder string) error {
 	}
 	defer file.Close()
 
-	err = client.WriteStream(fmt.Sprintf("%s/%s", folder, path.Base(fileName)), file, 0664)
+	/* upload []byte data with the Write function */
+	data, err := io.ReadAll(file)
 	if err != nil {
-		log.Println("Error writing file to WebDAV: ", err)
 		return err
 	}
+	err = client.Write(fmt.Sprintf("%s/%s", folder, path.Base(fileName)), data, 0664)
+	if err != nil {
+		return err
+	}
+	/* upload data as a stream using WriteStream
+	   - this does not work due to a bug in the dowebdav lib
+		err = client.WriteStream(fmt.Sprintf("%s/%s", folder, path.Base(fileName)), file, 0664)
+		if err != nil {
+			return err
+		}
+	*/
 
 	return nil
 }

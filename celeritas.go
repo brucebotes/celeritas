@@ -13,6 +13,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/brucebotes/celeritas/cache"
 	"github.com/brucebotes/celeritas/filesystems/miniofilesystem"
+	"github.com/brucebotes/celeritas/filesystems/s3filesystem"
 	"github.com/brucebotes/celeritas/filesystems/sftpfilesystem"
 	"github.com/brucebotes/celeritas/filesystems/webdavfilesystem"
 	"github.com/brucebotes/celeritas/mailer"
@@ -412,6 +413,18 @@ func (c *Celeritas) createFileSystems() map[string]interface{} {
 		}
 
 		fileSystems["WEBDAV"] = webdav
+	}
+
+	if os.Getenv("S3_KEY") != "" {
+		s3 := s3filesystem.S3{
+			Key:      os.Getenv("S3_KEY"),
+			Secret:   os.Getenv("S3_SECRET"),
+			Region:   os.Getenv("S3_REGION"),
+			Endpoint: os.Getenv("S3_ENDPOINT"),
+			Bucket:   os.Getenv("S3_BUCKET"),
+		}
+
+		fileSystems["S3"] = s3
 	}
 	return fileSystems
 }

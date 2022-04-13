@@ -1,31 +1,34 @@
 package main
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/fatih/color"
 )
 
 func doAuth() error {
+	checkForDB()
+	tx, err := cel.PopConnect()
+	if err != nil {
+		exitGracefully(err)
+	}
+	defer tx.Close()
+
 	// migrations
 	dbType := cel.DB.DataType
-	fileName := fmt.Sprintf("%d_create_auth_tables", time.Now().UnixMicro())
-	upFile := cel.RootPath + "/migrations/" + fileName + ".up.sql"
-	downFile := cel.RootPath + "/migrations/" + fileName + ".down.sql"
 
-	err := copyFileFromTemplate("templates/migrations/auth_tables."+dbType+".sql", upFile)
+	upBytes, err := templateFS.ReadFile("templates/migrations/auth_tables." + dbType + ".sql")
 	if err != nil {
 		exitGracefully(err)
 	}
 
-	err = copyDataToFile([]byte("drop table if exists users cascade; drop table if exists tokens cascade; drop table if exists remember_tokens;"), downFile)
+	downBytes := []byte("drop table if exists users cascade; drop table if exists tokens cascade; drop table if exists remember_tokens;")
+
+	err = cel.CreatePopMigration(upBytes, downBytes, "auth", "sql")
 	if err != nil {
 		exitGracefully(err)
 	}
 
 	// run migrations
-	doMigrate("up", "")
+	err = cel.RunPopMigrations(tx)
 	if err != nil {
 		exitGracefully(err)
 	}

@@ -20,12 +20,10 @@ func doMake(arg2, arg3, arg4 string) error {
 	case "migration":
 		checkForDB()
 
-		//dbType := cel.DB.DataType
 		if arg3 == "" {
 			exitGracefully(errors.New("you must give the migration a name"))
 		}
 
-		// default to mirgation type of fizz
 		migrationType := "fizz"
 		var up, down string
 
@@ -46,24 +44,6 @@ func doMake(arg2, arg3, arg4 string) error {
 		if err != nil {
 			exitGracefully(err)
 		}
-
-		/* old sql only migration
-
-		fileName := fmt.Sprintf("%d_%s", time.Now().UnixMicro(), arg3)
-
-		upFile := cel.RootPath + "/migrations/" + fileName + "." + dbType + ".up.sql"
-		downFile := cel.RootPath + "/migrations/" + fileName + "." + dbType + ".down.sql"
-
-		err := copyFileFromTemplate("templates/migrations/migration."+dbType+".up.sql", upFile)
-		if err != nil {
-			exitGracefully(err)
-		}
-
-		err = copyFileFromTemplate("templates/migrations/migration."+dbType+".down.sql", downFile)
-		if err != nil {
-			exitGracefully(err)
-		}
-		*/
 	case "auth":
 		err := doAuth()
 		if err != nil {

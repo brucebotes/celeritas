@@ -181,7 +181,7 @@ func (s *S3) Get(destination string, items ...string) error {
 
 	for _, item := range items {
 		err := func() error {
-			file, err := os.Create(fmt.Sprintf("%s/%s", destination, path.Base(item)))
+			file, err := os.Create(fmt.Sprintf("%s/%s", destination, item))
 			if err != nil {
 				return err
 			}

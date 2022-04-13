@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -59,20 +60,32 @@ func getDSN() string {
 	return "mysql://" + cel.BuildDSN()
 }
 
+func checkForDB() {
+	dbType := cel.DB.DataType
+
+	if dbType == "" {
+		exitGracefully(errors.New("no database connection provided in .env"))
+	}
+
+	if !fileExists(cel.RootPath + "/config/database.yml") {
+		exitGracefully(errors.New("config/database.yml does not exist"))
+	}
+}
+
 func showHelp() {
 	color.Yellow(`Avialable commands:
 
-	help                  - show the help commands
-	version               - print application version
-	migrate               - runs all up migrations that have not been run previously
-	migrate down          - reverses the most recent migration
-	migrate reset         - runs all down migrations in reverse order, and then all up migrations
-	make migration <name> - creates two new up and down migrations in the migrations folder containing <name>
-	make auth             - creates and runs migrations for authentication tables, and creates models and middleware
-	make handler <name>   - creates a stub handler in the handlers directory
-	make model <name>     - creates a new model in the data directory
-	make session          - creates a table in the database as a session store
-	make mail <mail>      - create two starter mail templates in the mail directory
+	help                             - show the help commands
+	version                          - print application version
+	migrate                          - runs all up migrations that have not been run previously
+	migrate down                     - reverses the most recent migration
+	migrate reset                    - runs all down migrations in reverse order, and then all up migrations
+	make migration <name> <format>   - creates two new up and down migrations in the migrations folder containing <name>; format=sql/fizz (default fizz)
+	make auth                        - creates and runs migrations for authentication tables, and creates models and middleware
+	make handler <name>              - creates a stub handler in the handlers directory
+	make model <name>                - creates a new model in the data directory
+	make session                     - creates a table in the database as a session store
+	make mail <mail>                 - create two starter mail templates in the mail directory
 	`)
 }
 

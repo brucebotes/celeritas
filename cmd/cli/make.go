@@ -5,23 +5,49 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
-	"time"
 
 	"github.com/fatih/color"
 	"github.com/gertd/go-pluralize"
 	"github.com/iancoleman/strcase"
 )
 
-func doMake(arg2, arg3 string) error {
+func doMake(arg2, arg3, arg4 string) error {
 	switch arg2 {
 	case "key":
 		rnd := cel.RandomString(32)
 		color.Yellow("32 character encryption key: %s", rnd)
+
 	case "migration":
-		dbType := cel.DB.DataType
+		checkForDB()
+
+		//dbType := cel.DB.DataType
 		if arg3 == "" {
 			exitGracefully(errors.New("you must give the migration a name"))
 		}
+
+		// default to mirgation type of fizz
+		migrationType := "fizz"
+		var up, down string
+
+		// are we doing fizz or sql?
+		if arg4 == "fizz" || arg4 == "" {
+
+			upBytes, _ := templateFS.ReadFile("templates/migrations/migration_up.fizz")
+			downBytes, _ := templateFS.ReadFile("templates/migrations/migration_down.fizz")
+
+			up = string(upBytes)
+			down = string(downBytes)
+		} else {
+			migrationType = "sql"
+		}
+
+		// create the migrations for either fizz or sql
+		err := cel.CreatePopMigration([]byte(up), []byte(down), arg3, migrationType)
+		if err != nil {
+			exitGracefully(err)
+		}
+
+		/* old sql only migration
 
 		fileName := fmt.Sprintf("%d_%s", time.Now().UnixMicro(), arg3)
 
@@ -37,6 +63,7 @@ func doMake(arg2, arg3 string) error {
 		if err != nil {
 			exitGracefully(err)
 		}
+		*/
 	case "auth":
 		err := doAuth()
 		if err != nil {

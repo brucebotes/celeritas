@@ -18,6 +18,7 @@ func (c *Celeritas) routes() http.Handler {
 	mux.Use(middleware.Recoverer)
 	mux.Use(c.SessionLoad)
 	mux.Use(c.NoSurf)
+	mux.Use(c.CheckForMaintenanceMode)
 
 	return mux
 }

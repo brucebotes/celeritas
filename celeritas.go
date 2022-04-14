@@ -3,7 +3,8 @@ package celeritas
 import (
 	"fmt"
 	"log"
-	"net/http"
+	"net"
+	"net/rpc"
 	"os"
 	"strconv"
 	"strings"
@@ -32,6 +33,7 @@ var myRedisCache *cache.RedisCache
 var myBadgerCache *cache.BadgerCache
 var redisPool *redis.Pool
 var badgerConn *badger.DB
+var maintenanceMode bool
 
 type Celeritas struct {
 	AppName       string
@@ -266,35 +268,6 @@ func (c *Celeritas) checkDotEnv(path string) error {
 	return nil
 }
 
-// ListenAndServe starts the web server
-func (c *Celeritas) ListenAndServe() {
-	srv := http.Server{
-		Addr:         fmt.Sprintf(":%s", os.Getenv("PORT")),
-		ErrorLog:     c.ErrorLog,
-		Handler:      c.Routes,
-		IdleTimeout:  30 * time.Second,
-		ReadTimeout:  30 * time.Second,
-		WriteTimeout: 600 * time.Second,
-	}
-
-	if c.DB.Pool != nil {
-		defer c.DB.Pool.Close()
-	}
-
-	if redisPool != nil {
-		defer redisPool.Close()
-	}
-
-	if badgerConn != nil {
-		defer badgerConn.Close()
-	}
-
-	c.InfoLog.Printf("Listening on port %s", os.Getenv("PORT"))
-	err := srv.ListenAndServe()
-	c.ErrorLog.Fatal(err)
-
-}
-
 func (c *Celeritas) startLoggers() (*log.Logger, *log.Logger) {
 	var infoLog *log.Logger
 	var errorLog *log.Logger
@@ -458,4 +431,46 @@ func (c *Celeritas) createFileSystems() map[string]interface{} {
 		fileSystems["S3"] = s3
 	}
 	return fileSystems
+}
+
+type RPCServer struct{}
+
+// Note for RPC calls we have to have a function that returns an error
+func (r *RPCServer) MaintenanceMode(inMaintenanceMode bool, resp *string) error {
+	if inMaintenanceMode {
+		maintenanceMode = true
+		*resp = "Server in maintenance mode"
+	} else {
+		maintenanceMode = false
+		*resp = "Server live!"
+	}
+
+	return nil
+}
+
+func (c *Celeritas) listenRPC() {
+	// if nothing specified for rpc port, don't start
+	if os.Getenv("RPC_PORT") != "" {
+		c.InfoLog.Println("Starting RPC server on port: ", os.Getenv("RPC_PORT"))
+		err := rpc.Register(new(RPCServer))
+		if err != nil {
+			c.ErrorLog.Println(err)
+			return
+		}
+
+		listen, err := net.Listen("tcp", "127.0.0.1:"+os.Getenv("RPC_PORT"))
+		if err != nil {
+			c.ErrorLog.Println(err)
+			return
+		}
+
+		for {
+			rpcConn, err := listen.Accept()
+			if err != nil {
+				continue
+			}
+
+			go rpc.ServeConn(rpcConn)
+		}
+	}
 }

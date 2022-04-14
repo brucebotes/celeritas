@@ -24,6 +24,11 @@ func main() {
 	switch arg1 {
 	case "help":
 		showHelp()
+	case "up":
+		rpcClient(false)
+
+	case "down":
+		rpcClient(true)
 
 	case "new":
 		if arg2 == "" {

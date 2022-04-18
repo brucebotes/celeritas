@@ -9,6 +9,7 @@ Login
 {{block pageContent()}}
 <h2 class="mt-5 text-center">Login</h2>
 
+
 <hr>
 
 {{if .Flash != ""}}
@@ -16,39 +17,54 @@ Login
     {{.Flash}}
 </div>
 {{end}}
+<div class="row">
+    <div class="col text-center">
+        <a href="/auth/github?provider=github" class="btn btn-outline-secondary">
+            <i class="bi bi-github"></i>
+            Login with GitHub
+        </a>
 
-<form class="d-block needs-validation" action="/users/login"
-  method="post" id="login-form"
-  autocomplete="off" novalidate=""
->
-  <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+        <br>
 
-  <div class="mb-3">
-    <label class="form-label" for="email">Email</label>
-    <input class="form-control" type="email" id="email"  name="email"
-      required="" autocomplete="email-new" >
-  </div>
+        <a href="/auth/google?provider=google" class="btn btn-outline-secondary mt-3">
+            <i class="bi bi-google"></i>
+            Login with Google
+        </a>
+    </div>
+    <div class="col">
+        <form method="post" action="/users/login"
+              name="login-form" id="login-form"
+              class="d-block needs-validation"
+              autocomplete="off" novalidate="">
 
-  <div class="mb-3">
-    <label class="form-label" for="password">Password</label>
-    <input class="form-control" type="password" id="password"  name="password"
-      required="" autocomplete="password-new" >
-  </div>
+            <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
 
-  <div class="form-check form-switch">
-      <input class="form-check-input" type="checkbox" value="remember" id="remember" name="remember">
-      <label class="form-check-label" for="remember">Remember Me</label>
-  </div>
-  <hr>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email"
+                       required="" autocomplete="email-new">
+            </div>
 
-  <a href="javascript:void(0)" class="btn btn-primary" onclick="val()">Login</a>
-  <p class="mt-2">
-    <small><a href="/users/forgot-password">Forgot password?</a></small>
-  </p>
-</form>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password"
+                       required="" autocomplete="password-new">
+            </div>
 
-<div class="text-center">
-  <a href="/" class="btn btn-outline-secondary">Back...</a>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" value="remember" name="remember" id="remember">
+                <label class="form-check-label" for="remember">Remember me</label>
+            </div>
+
+            <hr>
+
+            <a href="javascript:void(0)" class="btn btn-primary" onclick="val()">Login</a>
+            <p class="mt-2">
+                <small><a href="/users/forgot-password">Forgot password?</a></small>
+            </p>
+
+        </form>
+    </div>
 </div>
 
 <p>&nbsp;</p>
@@ -57,18 +73,17 @@ Login
 
 {{block js()}}
 <script>
-  function val() {
-    let form = document.getElementById("login-form")
-    if (form.checkValidity() == false) {
-      this.event.preventDefault()
-      this.event.stopPropagation()
-      form.classList.add("was-validated")
-      return
+    function val() {
+        let form = document.getElementById("login-form");
+        if (form.checkValidity() === false) {
+            this.event.preventDefault();
+            this.event.stopPropagation();
+            form.classList.add("was-validated");
+            return;
+        }
+
+        form.classList.add("was-validated");
+        form.submit();
     }
-
-    form.classList.add("was-validated")
-    form.submit()
-  }
 </script>
-
 {{end}}

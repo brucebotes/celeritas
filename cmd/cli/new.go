@@ -113,6 +113,7 @@ func doNew(appName string) {
 	//err = cmd.Start()
 	err = cmd.Run()
 	if err != nil {
+		color.Red("Error doing go get github.com/brucebotes/celeritas")
 		exitGracefully(err)
 	}
 
@@ -120,6 +121,7 @@ func doNew(appName string) {
 	//err = cmd.Start()
 	err = cmd.Run()
 	if err != nil {
+		color.Red("Error doing go mod tidy")
 		exitGracefully(err)
 	}
 

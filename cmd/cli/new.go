@@ -108,8 +108,15 @@ func doNew(appName string) {
 	updateSource()
 
 	// run go mod tidy in the project directory
-	color.Yellow("\tRunning go mod tidy...")
-	cmd := exec.Command("go", "mod", "tidy")
+	color.Yellow("\tGet lastest version of celeritas and running go mod tidy...")
+	cmd := exec.Command("go", "get", "github.com/brucebotes/celeritas")
+	//err = cmd.Start()
+	err = cmd.Run()
+	if err != nil {
+		exitGracefully(err)
+	}
+
+	cmd = exec.Command("go", "mod", "tidy")
 	//err = cmd.Start()
 	err = cmd.Run()
 	if err != nil {

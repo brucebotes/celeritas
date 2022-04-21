@@ -1,6 +1,8 @@
 package main
 
 import (
+	"path"
+
 	"github.com/fatih/color"
 )
 
@@ -64,13 +66,11 @@ func doAuth() error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	//TODO: replace "myapp" references in remember.go with the new app name
 
 	err = copyFileFromTemplate("templates/handlers/auth-handlers.go.txt", cel.RootPath+"/handlers/auth-handlers.go")
 	if err != nil {
 		exitGracefully(err)
 	}
-	//TODO: replace "myapp" references in auth-handlers.go with the new app name
 
 	err = copyFileFromTemplate("templates/mailer/password-reset.html.tmpl", cel.RootPath+"/mail/password-reset.html.tmpl")
 	if err != nil {
@@ -96,6 +96,10 @@ func doAuth() error {
 	if err != nil {
 		exitGracefully(err)
 	}
+
+	// reset "myapp" package references
+	appURL = path.Base(cel.RootPath)
+	updateSource()
 
 	color.Yellow("  - users, tokens and remember_tokens migrations created and executed")
 	color.Yellow("  - user and token models created")

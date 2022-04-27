@@ -30,3 +30,12 @@ type redisConfig struct {
 	password string
 	prefix   string
 }
+
+type webSockConfig struct {
+	secret       string
+	key          string
+	host         string
+	port         string
+	authEndPoint string
+	secure       bool
+}

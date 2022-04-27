@@ -6,8 +6,17 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
+	"os/exec"
+	"strconv"
+
+	"github.com/evanw/esbuild/pkg/api"
+	"github.com/pusher/pusher-http-go"
 )
 
 const (
@@ -95,4 +104,104 @@ func (e *Encryption) Decrypt(cryptoText string) (string, error) {
 	stream.XORKeyStream(ciphertext, ciphertext)
 
 	return string(ciphertext), nil
+}
+
+//BuildJScript take a javascript/typescript/react module and compile to esModule
+//Write esModule to file in the static folder
+func (c *Celeritas) BuildJSCSSscript(view, src string) error {
+	if !c.Debug {
+		return nil
+	}
+	result := api.Build(api.BuildOptions{
+		NodePaths:   []string{view + "/node_modules/"},
+		EntryPoints: []string{view + "/" + src},
+		Bundle:      true,
+		Loader: map[string]api.Loader{
+			".css": api.LoaderCSS,
+		},
+		// disable minification for development
+		//MinifyWhitespace:  true,
+		//MinifyIdentifiers: true,
+		//MinifySyntax:      true,
+		Metafile:  true,
+		Sourcemap: api.SourceMapLinked,
+		Write:     true,
+		Outdir:    "public/" + view,
+	})
+	if len(result.Errors) > 0 {
+		log.Println("Esbuild errors \u2192", result.Errors)
+		return errors.New("error compiling jsx and css")
+	}
+	ioutil.WriteFile("public/"+view+"/meta.json", []byte(result.Metafile), 0644)
+	return nil
+}
+
+//BuildJScript take a javascript/typescript/react module and compile to esModule
+//Write esModule to file in the static folder
+func (c *Celeritas) BuildWithNpmScript(mod string) error {
+	if !c.Debug {
+		return nil
+	}
+	cmd := exec.Command("npm", "run", "build")
+	cmd.Dir = c.RootPath + "/views/" + mod
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		log.Println("Command error 1 compiling Javascript \u2192", err)
+		return err
+	}
+	err = cmd.Start()
+	if err != nil {
+		log.Println("Command error 2 compiling Javascript \u2192", err)
+		return err
+	}
+
+	data, err := ioutil.ReadAll(stderr)
+	if err != nil {
+		log.Println("Command error 3 compiling Javascript \u2192", err)
+		return err
+	}
+	err = cmd.Wait()
+	if err != nil {
+		log.Println("Command error 4 compiling Javascript \u2192", err)
+		return err
+	}
+
+	if len(data) > 0 {
+		c.ErrorLog.Println(fmt.Printf("Compile error message \u2192 %s\n", string(data)))
+	}
+
+	return nil
+}
+
+func (c *Celeritas) AuthenticateWebsocket(userID int, userName string, params []byte) ([]byte, error) {
+
+	presenceData := pusher.MemberData{
+		UserID: strconv.Itoa(userID),
+		UserInfo: map[string]string{
+			"name": "FirstName",
+			"id":   strconv.Itoa(userID),
+		},
+	}
+
+	response, err := c.wsClient.AuthenticatePresenceChannel(params, presenceData)
+	return response, err
+}
+
+func (c *Celeritas) ListenForWebsocketEvents(r *http.Request, buff []byte) (*pusher.Webhook, error) {
+	webhook, err := c.wsClient.Webhook(r.Header, buff)
+	if err != nil {
+		return nil, err
+	}
+	return webhook, err
+}
+
+func (c *Celeritas) BroadcastWebsocketMessage(channel, messageType string, data interface{}) error {
+	err := c.wsClient.Trigger(channel, messageType, data)
+	if err != nil {
+		c.ErrorLog.Println("Websocket broadcast error: " + err.Error())
+		return err
+	}
+
+	return nil
 }

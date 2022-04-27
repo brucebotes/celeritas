@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -24,7 +25,12 @@ func (c *Celeritas) NoSurf(next http.Handler) http.Handler {
 	// before hitting the route endpoint) like
 	// in our api routes
 	// - use ExemptGlob
-	csrfHandler.ExemptGlob("/api/*")
+	//	csrfHandler.ExemptGlob("/api/*")
+
+	csrfHandler.ExemptPath("/pusher/auth")
+	csrfHandler.ExemptPath("/pusher/hook")
+	rgx, _ := regexp.Compile("^/api/")
+	csrfHandler.ExemptRegexp(rgx)
 
 	csrfHandler.SetBaseCookie(http.Cookie{
 		HttpOnly: true,

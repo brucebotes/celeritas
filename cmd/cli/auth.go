@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"path"
 
 	"github.com/fatih/color"
@@ -66,12 +67,22 @@ func doAuth() error {
 	if err != nil {
 		exitGracefully(err)
 	}
+	// reset "myapp" package references in templates
+	color.Yellow("\tUpdating middleware source files...")
+	appURL = path.Base(cel.RootPath) // get appName from path
+	os.Chdir(cel.RootPath + "/middleware")
+	updateSource()
 
 	err = copyFileFromTemplate("templates/handlers/auth-handlers.go.txt", cel.RootPath+"/handlers/auth-handlers.go")
 	if err != nil {
 		exitGracefully(err)
 	}
+	// reset "myapp" package references in templates
+	color.Yellow("\tUpdating handlers source files...")
+	os.Chdir(cel.RootPath + "/handlers")
+	updateSource()
 
+	// copy templates
 	err = copyFileFromTemplate("templates/mailer/password-reset.html.tmpl", cel.RootPath+"/mail/password-reset.html.tmpl")
 	if err != nil {
 		exitGracefully(err)
@@ -97,9 +108,8 @@ func doAuth() error {
 		exitGracefully(err)
 	}
 
-	// reset "myapp" package references
-	appURL = path.Base(cel.RootPath)
-	updateSource()
+	// reset path
+	os.Chdir(cel.RootPath)
 
 	color.Yellow("  - users, tokens and remember_tokens migrations created and executed")
 	color.Yellow("  - user and token models created")

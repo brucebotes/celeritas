@@ -20,10 +20,12 @@ import (
 	"github.com/brucebotes/celeritas/mailer"
 	"github.com/brucebotes/celeritas/render"
 	"github.com/brucebotes/celeritas/session"
+	"github.com/brucebotes/celeritas/websocket"
 	"github.com/dgraph-io/badger/v3"
 	"github.com/go-chi/chi/v5"
 	"github.com/gomodule/redigo/redis"
 	"github.com/joho/godotenv"
+	"github.com/pusher/pusher-http-go"
 	"github.com/robfig/cron/v3"
 )
 
@@ -58,6 +60,7 @@ type Celeritas struct {
 	SFTP          sftpfilesystem.SFTP
 	WebDAV        webdavfilesystem.WebDAV
 	Minio         miniofilesystem.Minio
+	wsClient      *pusher.Client
 }
 
 type Server struct {
@@ -75,6 +78,7 @@ type config struct {
 	database    databaseConfig
 	redis       redisConfig
 	uploads     uploadConfig
+	webSocket   webSockConfig
 }
 
 type uploadConfig struct {
@@ -145,6 +149,11 @@ func (c *Celeritas) New(rootPath string) error {
 		maxUploadSize = int64(max)
 	}
 
+	wssecure := true
+	if strings.ToLower(os.Getenv("WEBSOCKET_SECURE")) == "false" {
+		wssecure = false
+	}
+
 	c.config = config{
 		port:     os.Getenv("PORT"),
 		renderer: os.Getenv("RENDERER"),
@@ -168,6 +177,14 @@ func (c *Celeritas) New(rootPath string) error {
 		uploads: uploadConfig{
 			maxUploadSize:    maxUploadSize,
 			allowedMimeTypes: mimeTypes,
+		},
+		webSocket: webSockConfig{
+			secret:       os.Getenv("WEBSOCKET_SECRET"),
+			key:          os.Getenv("WEBSOCKET_KEY"),
+			host:         os.Getenv("WEBSOCKET_HOST"),
+			port:         os.Getenv("WEBSOCKET_PORT"),
+			authEndPoint: os.Getenv("WEBSOCKET_AUTH_END_POINT"),
+			secure:       wssecure,
 		},
 	}
 
@@ -238,7 +255,9 @@ func (c *Celeritas) New(rootPath string) error {
 		c.JetViews = views
 	}
 
-	c.createRenderer()
+	websocket := c.createWebSocket()
+	c.wsClient = websocket.Init("1")
+	c.createRenderer(websocket)
 	c.FileSystems = c.createFileSystems()
 
 	go c.Mail.ListenForMail()
@@ -278,13 +297,14 @@ func (c *Celeritas) startLoggers() (*log.Logger, *log.Logger) {
 	return infoLog, errorLog
 }
 
-func (c *Celeritas) createRenderer() {
+func (c *Celeritas) createRenderer(websocket *websocket.WebSocket) {
 	myRenderer := render.Render{
-		Renderer: c.config.renderer,
-		RootPath: c.RootPath,
-		Port:     c.config.port,
-		JetViews: c.JetViews,
-		Session:  c.Session,
+		Renderer:  c.config.renderer,
+		RootPath:  c.RootPath,
+		Port:      c.config.port,
+		JetViews:  c.JetViews,
+		Session:   c.Session,
+		WebSocket: websocket,
 	}
 	c.Render = &myRenderer
 }
@@ -431,6 +451,19 @@ func (c *Celeritas) createFileSystems() map[string]interface{} {
 		fileSystems["S3"] = s3
 	}
 	return fileSystems
+}
+
+func (c *Celeritas) createWebSocket() *websocket.WebSocket {
+	webSock := websocket.WebSocket{
+		Secret:       c.config.webSocket.secret,
+		Key:          c.config.webSocket.key,
+		Host:         c.config.webSocket.host,
+		Port:         c.config.webSocket.port,
+		AuthEndPoint: c.config.webSocket.authEndPoint,
+		Secure:       c.config.webSocket.secure,
+	}
+
+	return &webSock
 }
 
 type RPCServer struct{}

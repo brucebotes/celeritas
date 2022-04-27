@@ -22,6 +22,7 @@ import (
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/github"
 	"github.com/markbates/goth/providers/google"
+	"github.com/pusher/pusher-http-go"
 )
 
 func (h *Handlers) UserLogin(w http.ResponseWriter, r *http.Request) {
@@ -264,6 +265,31 @@ func (h *Handlers) PostResetPassword(w http.ResponseWriter, r *http.Request) {
 	//redirect
 	h.App.Session.Put(r.Context(), "flash", "Password reset. You can now log in.")
 	http.Redirect(w, r, "/users/login", http.StatusSeeOther)
+}
+
+// PusherAuth authenticates the user on PRIVATE and PRESENCE channels
+// The user can only trigger events on PRIVATE/PRSENCE channels and
+// not on PUBLIC channels
+func (h *Handlers) PusherAuth(w http.ResponseWriter, r *http.Request) {
+	userID := h.App.Session.GetInt(r.Context(), "userID")
+	u, _ := h.Models.Users.Get(userID)
+	params, _ := io.ReadAll(r.Body)
+	presenceData := pusher.MemberData{
+		UserID: strconv.Itoa(userID),
+		UserInfo: map[string]string{
+			"name": u.FirstName,
+			"id":   strconv.Itoa(userID),
+		},
+	}
+
+	response, err := h.App.WsClient.AuthenticatePresenceChannel(params, presenceData)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_, _ = w.Write(response)
 }
 
 func (h *Handlers) InitSocialAuth() {

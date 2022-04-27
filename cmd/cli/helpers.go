@@ -88,6 +88,9 @@ func showHelp() {
 	make model <name>                - creates a new model in the data directory
 	make session                     - creates a table in the database as a session store
 	make mail <mail>                 - create two starter mail templates in the mail directory
+	make svelte <name>               - creates a new jet template with svelte integration in the views folder with <name>
+	make wshandler <name>            - creates a handler to authenticate a user for  websocket usage with <name>
+	make sharedobj                   - creates the shared folder in views and copies common global javascript objetcs for use all js modules
 	`)
 }
 
@@ -134,4 +137,31 @@ func updateSource() {
 	if err != nil {
 		exitGracefully(err)
 	}
+}
+
+func createDirIfNotExist(path string) error {
+	const mode = 0755
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		err := os.Mkdir(path, mode)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func createFileIfNotExists(path string) error {
+	var _, err = os.Stat(path)
+	if os.IsNotExist(err) {
+		var file, err = os.Create(path)
+		if err != nil {
+			return err
+		}
+
+		defer func(file *os.File) {
+			_ = file.Close()
+		}(file)
+	}
+
+	return nil
 }

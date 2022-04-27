@@ -1,0 +1,19 @@
+package handlers
+
+import (
+	"net/http"
+
+	"github.com/go-chi/chi/v5"
+)
+
+func (h *Handlers) SvelteViews(w http.ResponseWriter, r *http.Request) {
+	module := chi.URLParam(r, "module")
+	err := h.App.BuildWithNpmScript(module)
+	if err != nil {
+		h.App.ErrorLog.Println(err)
+	}
+	err = h.App.Render.Page(w, r, module+"/index", nil, nil)
+	if err != nil {
+		h.App.ErrorLog.Println(err)
+	}
+}

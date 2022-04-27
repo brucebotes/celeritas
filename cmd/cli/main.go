@@ -19,6 +19,7 @@ func main() {
 		exitGracefully(err)
 	}
 
+	// set RootPath etc
 	setup(arg1, arg2)
 
 	switch arg1 {

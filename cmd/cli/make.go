@@ -131,6 +131,35 @@ func doMake(arg2, arg3, arg4 string) error {
 		if err != nil {
 			exitGracefully(err)
 		}
+	case "svelte":
+		if arg3 == "" {
+			exitGracefully(errors.New("you must give the Svelte view a name"))
+		}
+		err := doSvelteView(arg3)
+		if err != nil {
+			exitGracefully(err)
+		}
+	case "wshandler":
+		if arg3 == "" {
+			exitGracefully(errors.New("you must give the  a websocket handler a name"))
+		}
+
+		target := cel.RootPath + "/handlers/" + strings.ToLower(arg3) + ".go"
+
+		err := copyFileFromTemplate("templates/handlers/websocket.handler.go.txt", target)
+		if err != nil {
+			exitGracefully(err)
+		}
+
+	case "sharedobj":
+		folder := cel.RootPath + "/views/shared"
+
+		cel.CreateDirIfNotExist(folder)
+		err := copyFileFromTemplate("templates/views/shared/initialize.ts", folder+"/initialize.ts")
+		if err != nil {
+			exitGracefully(err)
+		}
+
 	default:
 		exitGracefully(errors.New(fmt.Sprintf("Command '%s' is not implemented!", arg2)))
 	}

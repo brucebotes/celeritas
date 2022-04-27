@@ -27,8 +27,10 @@ func (c *Celeritas) routes() http.Handler {
 // in Celeritas applications
 func Routes() http.Handler {
 	r := chi.NewRouter()
+
 	r.Get("/test-c", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("it works!"))
 	})
+
 	return r
 }

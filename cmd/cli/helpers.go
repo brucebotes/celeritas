@@ -91,6 +91,7 @@ func showHelp() {
 	make svelte <name>               - creates a new jet template with svelte integration in the views folder with <name>
 	make wshandler <name>            - creates a handler to authenticate a user for  websocket usage with <name>
 	make sharedobj                   - creates the shared folder in views and copies common global javascript objetcs for use all js modules
+	make cacheapi                    - creates the handlers and api routes for the cache (Redid or Badger) with a cache.jet test template 
 	`)
 }
 
@@ -139,6 +140,8 @@ func updateSource() {
 	}
 }
 
+/* No need to define these - the equivalent exist
+   with the (cel *Celeritas) reciever
 func createDirIfNotExist(path string) error {
 	const mode = 0755
 	if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -165,3 +168,4 @@ func createFileIfNotExists(path string) error {
 
 	return nil
 }
+*/

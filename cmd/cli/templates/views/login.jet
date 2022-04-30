@@ -19,14 +19,14 @@ Login
 {{end}}
 <div class="row">
     <div class="col text-center">
-        <a href="/auth/github?provider=github" class="btn btn-outline-secondary">
+        <a href="/users/auth/github?provider=github" class="btn btn-outline-secondary">
             <i class="bi bi-github"></i>
             Login with GitHub
         </a>
 
         <br>
 
-        <a href="/auth/google?provider=google" class="btn btn-outline-secondary mt-3">
+        <a href="/users/auth/google?provider=google" class="btn btn-outline-secondary mt-3">
             <i class="bi bi-google"></i>
             Login with Google
         </a>

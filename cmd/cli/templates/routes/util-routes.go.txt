@@ -85,6 +85,34 @@ func (a *application) UtilityRoutes() http.Handler {
 			fmt.Fprintf(w, "%s %s %s", u.FirstName, u.LastName, u.Email)
 		})
 
+		r.Get("/test-mail", func(w http.ResponseWriter, r *http.Request) {
+			msg := mailer.Message{
+				From:        "test@example.com",
+				To:          "you@here.com",
+				Subject:     "Test Subject - sent using channel",
+				Template:    "test",
+				Attachments: nil,
+				Data:        nil,
+			}
+
+			// example using channels
+			/*
+				a.App.Mail.Jobs <- msg
+				res := <-a.App.Mail.Results
+				if res.Error != nil {
+					a.App.ErrorLog.Println(res.Error)
+				}
+			*/
+
+			//example - direct call to SMTP
+			msg.Subject = "Test Subject - sent using function"
+			err := a.App.Mail.SendSMTPMessage(msg)
+			if err != nil {
+				a.App.ErrorLog.Println(err)
+			}
+
+			fmt.Fprint(w, "Send mail!")
+		})
 	})
 
 	return r

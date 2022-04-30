@@ -118,14 +118,15 @@ func doAuth() error {
 		exitGracefully(err)
 	}
 	appURL = path.Base(cel.RootPath) // get appName from path
-	os.Chdir(cel.RootPath + "/middleware")
-	updateSource()
-	// reset path
 	os.Chdir(cel.RootPath)
+	updateSource()
 
-	color.Yellow("  - users, tokens and remember_tokens migrations created and executed")
-	color.Yellow("  - user and token models created")
-	color.Yellow("  - auth and middleware created")
+	// reset path
+	//os.Chdir(cel.RootPath)
+
+	color.Yellow("\t  - users, tokens and remember_tokens migrations created and executed")
+	color.Yellow("\t  - user and token models created")
+	color.Yellow("\t  - auth and middleware created")
 	color.Yellow("")
 	color.Yellow("Don't forget to add user and token models in data/models.go, and to add appropiate middleware to your routes!")
 

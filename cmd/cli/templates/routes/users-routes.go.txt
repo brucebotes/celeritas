@@ -13,6 +13,10 @@ func (a *application) UsersRoutes() http.Handler {
 		r.Get("/login", a.Handlers.UserLogin)
 		r.Post("/login", a.Handlers.PostUserLogin)
 		r.Get("/logout", a.Handlers.UserLogout)
+		r.Get("/forgot-password", a.Handlers.Forgot)
+		r.Post("/forgot-password", a.Handlers.PostForgot)
+		r.Get("/reset-password", a.Handlers.ResetPasswordForm)
+		r.Post("/reset-password", a.Handlers.PostResetPassword)
 
 		// OAuth2 routes
 		r.Get("/auth/{provider}", a.Handlers.SocialLogin)
@@ -21,4 +25,3 @@ func (a *application) UsersRoutes() http.Handler {
 
 	return r
 }
-

@@ -117,7 +117,7 @@ func doNew(appName string) {
 		exitGracefully(err)
 	}
 
-	cmd = exec.Command("go", "mod", "tidy")
+	cmd = exec.Command("go", "mod", "tidy", "-compat=1.17")
 	//err = cmd.Start()
 	err = cmd.Run()
 	if err != nil {
@@ -126,5 +126,7 @@ func doNew(appName string) {
 	}
 
 	color.Green("Done building " + appURL)
+	color.Yellow("\tRemember to setup a database in .env and config/databse.yml!")
+	color.Yellow("\tThen run 'make start'. Resovle missing packages.")
 	color.Green("Go build something awesome!")
 }

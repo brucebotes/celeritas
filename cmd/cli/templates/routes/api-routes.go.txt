@@ -1,0 +1,22 @@
+package main
+
+import (
+	"net/http"
+
+	"github.com/go-chi/chi/v5"
+)
+
+func (a *application) ApiRoutes() http.Handler {
+	r := chi.NewRouter()
+
+	r.Route("/api", func(mux chi.Router) {
+		// add any api routes here
+		r.Post("/save-in-cache", a.Handlers.SaveInCache)
+		r.Post("/get-from-cache", a.Handlers.GetFromCache)
+		r.Post("/delete-from-cache", a.Handlers.DeleteFromCache)
+		r.Post("/empty-cache", a.Handlers.EmptyCache)
+
+	})
+
+	return r
+}

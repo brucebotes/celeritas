@@ -164,6 +164,12 @@ func doMake(arg2, arg3, arg4 string) error {
 			exitGracefully(err)
 		}
 
+	case "cacheapi":
+		err := doCacheApi()
+		if err != nil {
+			exitGracefully(err)
+		}
+
 	default:
 		exitGracefully(errors.New(fmt.Sprintf("Command '%s' is not implemented!", arg2)))
 	}

@@ -22,7 +22,6 @@ import (
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/github"
 	"github.com/markbates/goth/providers/google"
-	"github.com/pusher/pusher-http-go"
 )
 
 func (h *Handlers) UserLogin(w http.ResponseWriter, r *http.Request) {

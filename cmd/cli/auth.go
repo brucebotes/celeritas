@@ -108,6 +108,18 @@ func doAuth() error {
 		exitGracefully(err)
 	}
 
+	// copy routes
+	err = copyFileFromTemplate("templates/routes/users-routes.go.txt", cel.RootPath+"/routes-users.go")
+	if err != nil {
+		exitGracefully(err)
+	}
+	err = copyFileFromTemplate("templates/routes/util-routes.go.txt", cel.RootPath+"/routes-util.go")
+	if err != nil {
+		exitGracefully(err)
+	}
+	appURL = path.Base(cel.RootPath) // get appName from path
+	os.Chdir(cel.RootPath + "/middleware")
+	updateSource()
 	// reset path
 	os.Chdir(cel.RootPath)
 

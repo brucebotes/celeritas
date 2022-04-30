@@ -150,6 +150,10 @@ func doMake(arg2, arg3, arg4 string) error {
 		if err != nil {
 			exitGracefully(err)
 		}
+		err = copyFileFromTemplate("templates/routes/pusher-routes.go.txt", cel.RootPath+"/routes-pusher.go")
+		if err != nil {
+			exitGracefully(err)
+		}
 
 	case "sharedobj":
 		folder := cel.RootPath + "/views/shared"

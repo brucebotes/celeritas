@@ -1,0 +1,24 @@
+package main
+
+import (
+	"net/http"
+
+	"github.com/go-chi/chi/v5"
+)
+
+func (a *application) UsersRoutes() http.Handler {
+	r := chi.NewRouter()
+
+	r.Route("/users", func(mux chi.Router) {
+		r.Get("/login", a.Handlers.UserLogin)
+		r.Post("/login", a.Handlers.PostUserLogin)
+		r.Get("/logout", a.Handlers.UserLogout)
+
+		// OAuth2 routes
+		r.Get("/auth/{provider}", a.Handlers.SocialLogin)
+		r.Get("/auth/{provider}/callback", a.Handlers.SocialMediaCallback)
+	})
+
+	return r
+}
+

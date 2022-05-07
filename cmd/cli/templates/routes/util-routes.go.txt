@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/brucebotes/celeritas/mailer"
 	"github.com/go-chi/chi/v5"
 )
 

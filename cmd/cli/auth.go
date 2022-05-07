@@ -129,6 +129,8 @@ func doAuth() error {
 	color.Yellow("\t  - auth and middleware created")
 	color.Yellow("")
 	color.Yellow("Don't forget to add user and token models in data/models.go, and to add appropiate middleware to your routes!")
+	color.Yellow("")
+	color.Yellow("Ps. Run http://localhost:port/appname/util/create-user to create the first admin user")
 
 	return nil
 }

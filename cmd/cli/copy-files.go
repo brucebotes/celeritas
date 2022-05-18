@@ -42,3 +42,19 @@ func fileExists(fileToCheck string) bool {
 	}
 	return true
 }
+
+func copyFromTemplatreFolderToDestinationFolder(templatePath, destPath string) error {
+	templates, err := templateFS.ReadDir(templatePath)
+	if err != nil {
+		return err
+	}
+	for _, f := range templates {
+		if !f.IsDir() {
+			err := copyFileFromTemplate(templatePath+"/"+f.Name(), destPath+"/"+f.Name())
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}

@@ -104,10 +104,36 @@ func doSvelteView(modName string) error {
 		exitGracefully(err)
 	}
 	for _, f := range templates {
-		err = copyFileFromTemplate("templates/views/svelte-scripts/src/"+f.Name(), modPath+"/src/"+f.Name())
-		if err != nil {
-			exitGracefully(err)
+		if !f.IsDir() {
+			data, err = templateFS.ReadFile("templates/views/svelte-scripts/src/" + f.Name())
+			if err != nil {
+				exitGracefully(err)
+			}
+			temp = string(data)
+			temp = strings.ReplaceAll(temp, "${MOD_NAME}", modName)
+			err = copyDataToFile([]byte(temp), modPath+"/src/"+f.Name())
+			if err != nil {
+				exitGracefully(err)
+			}
 		}
+	}
+	// create the src/pager folder and contents
+	err = os.Mkdir(modPath+"/src/pager", 0755)
+	if err != nil {
+		exitGracefully(err)
+	}
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte-scripts/src/pager", modPath+"/src/pager")
+	if err != nil {
+		exitGracefully(err)
+	}
+	// create the src/pages folder and contents
+	err = os.Mkdir(modPath+"/src/pages", 0755)
+	if err != nil {
+		exitGracefully(err)
+	}
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte-scripts/src/pages", modPath+"/src/pages")
+	if err != nil {
+		exitGracefully(err)
 	}
 
 	// create the public folder and contents for the dev environment
@@ -115,15 +141,9 @@ func doSvelteView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	templates, err = templateFS.ReadDir("templates/views/svelte-scripts/public")
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte-scripts/public", modPath+"/public")
 	if err != nil {
 		exitGracefully(err)
-	}
-	for _, f := range templates {
-		err = copyFileFromTemplate("templates/views/svelte-scripts/public/"+f.Name(), modPath+"/public/"+f.Name())
-		if err != nil {
-			exitGracefully(err)
-		}
 	}
 
 	makeSvelteViewsHandler()
@@ -131,6 +151,7 @@ func doSvelteView(modName string) error {
 	color.Yellow("\tYou may execute 'npm run dev' after the 'npm install' to test the svelte config")
 	color.Yellow("\tPlease remember to add the following to your routes.go file")
 	color.Yellow("\ta.get(\"/svh/{module}\", a.Handlers.SvelteViews)")
+	color.Yellow("\ta.get(\"/svh/{module}/*\", a.Handlers.SvelteViews)")
 
 	return nil
 }

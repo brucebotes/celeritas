@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>${MOD_NAME} module</title>
+    <base href="/svh/${MOD_NAME}/"
     <link rel="stylesheet" href="/public/assets/css/all.min.css" />
     <link rel="stylesheet" href="/public/assets/css/bulma.min.css" />
     <link
@@ -15,28 +16,6 @@
   <style>
     * {
       box-sizing: border-box;
-    }
-    .grid-container {
-      display: grid;
-      grid-template-columns: minmax(56rem, 1fr) minmax(20px, 1fr);
-      grid-template-rows: auto;
-      grid-template-areas: 'grid1 grid2';
-      grid-column-gap: 5px;
-    }
-    #grid1 {
-      grid-area: grid1;
-    }
-    #grid2 {
-      grid-area: grid2;
-    }
-    @media (max-width: 80rem) {
-      .grid-container {
-        grid-template-columns: minmax(20px, 1fr);
-        grid-template-rows: auto auto;
-        grid-template-areas:
-          'grid1'
-          'grid2';
-      }
     }
   </style>
   <script src="/public/assets/scripts/pusher.min.js"></script>
@@ -106,14 +85,5 @@
     src="/public/views/${MOD_NAME}/bundle.js"
   ></script>
   <body>
-    <div class="grid-container">
-      <div id="grid1">
-        <p class="title my-3 mx-4">Grid 1</p>
-      </div>
-      <div id="grid2">
-        <p class="title my-3 mx-4">Grid 2</p>
-        <div id="root"/>
-      </div>
-    </div>
   </body>
 </html>

@@ -15,7 +15,15 @@ import (
 // example : a.post("/pusher/auth", a.Handlers.WsAuthenticate)
 func (h *Handlers) WsAuthenticate(w http.ResponseWriter, r *http.Request) {
 	userID := h.App.Session.GetInt(r.Context(), "userID")
-	u, _ := h.Models.Users.Get(userID)
+	if userID == 0 {
+		h.App.ErrorLog.Println("User not authenticated")
+		return
+	}
+	u, err := h.Models.Users.Get(userID)
+	if err != nil {
+		h.App.ErrorLog.Println("error authenticating websocket user:", err)
+		return
+	}
 	params, _ := io.ReadAll(r.Body)
 
 	response, err := h.App.AuthenticateWebsocket(userID, u.FirstName, params)

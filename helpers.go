@@ -167,8 +167,8 @@ func (c *Celeritas) BuildWithNpmScript(mod string) error {
 		return err
 	}
 
-	if len(data) > 0 {
-		c.ErrorLog.Println(fmt.Printf("Compile message \u2192 %s\n", string(data)))
+	if data != nil && len(data) > 0 {
+		c.ErrorLog.Println(fmt.Printf("Compilng '/views/%s': Error/Warning messages \u2192 \n%s\n", mod, string(data)))
 	}
 
 	return nil

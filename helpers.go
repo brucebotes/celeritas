@@ -108,13 +108,15 @@ func (e *Encryption) Decrypt(cryptoText string) (string, error) {
 
 //BuildJScript take a javascript/typescript/react module and compile to esModule
 //Write esModule to file in the static folder
-func (c *Celeritas) BuildJSCSSscript(view, src string) error {
+func (c *Celeritas) BuildJSCSSscript(module, src string) error {
 	if !c.Debug {
 		return nil
 	}
+	buildPath := c.RootPath + "/views/" + module
+	log.Println("build parh:", buildPath+"/"+src)
 	result := api.Build(api.BuildOptions{
-		NodePaths:   []string{view + "/node_modules/"},
-		EntryPoints: []string{view + "/" + src},
+		NodePaths:   []string{buildPath + "/node_modules/"},
+		EntryPoints: []string{buildPath + "/" + src},
 		Bundle:      true,
 		Loader: map[string]api.Loader{
 			".css": api.LoaderCSS,
@@ -123,27 +125,28 @@ func (c *Celeritas) BuildJSCSSscript(view, src string) error {
 		//MinifyWhitespace:  true,
 		//MinifyIdentifiers: true,
 		//MinifySyntax:      true,
-		Metafile:  true,
-		Sourcemap: api.SourceMapLinked,
-		Write:     true,
-		Outdir:    "public/" + view,
+		Metafile:    true,
+		Sourcemap:   api.SourceMapLinked,
+		Write:       true,
+		Outfile:     c.RootPath + "/public/views/" + module + "/bundle.js",
+		TreeShaking: api.TreeShakingTrue,
 	})
 	if len(result.Errors) > 0 {
 		log.Println("Esbuild errors \u2192", result.Errors)
 		return errors.New("error compiling jsx and css")
 	}
-	ioutil.WriteFile("public/"+view+"/meta.json", []byte(result.Metafile), 0644)
+	ioutil.WriteFile("public/views/"+module+"/meta.json", []byte(result.Metafile), 0644)
 	return nil
 }
 
 //BuildJScript take a javascript/typescript/react module and compile to esModule
 //Write esModule to file in the static folder
-func (c *Celeritas) BuildWithNpmScript(mod string) error {
+func (c *Celeritas) BuildWithNpmScript(module string) error {
 	if !c.Debug {
 		return nil
 	}
 	cmd := exec.Command("npm", "run", "build")
-	cmd.Dir = c.RootPath + "/views/" + mod
+	cmd.Dir = c.RootPath + "/views/" + module
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
@@ -168,7 +171,7 @@ func (c *Celeritas) BuildWithNpmScript(mod string) error {
 	}
 
 	if data != nil && len(data) > 0 {
-		c.ErrorLog.Println(fmt.Printf("Compilng '/views/%s': Error/Warning messages \u2192 \n%s\n", mod, string(data)))
+		c.ErrorLog.Println(fmt.Printf("Compilng '/views/%s': Error/Warning messages \u2192 \n%s\n", module, string(data)))
 	}
 
 	return nil

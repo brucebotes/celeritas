@@ -44,11 +44,13 @@ func doMake(arg2, arg3, arg4 string) error {
 		if err != nil {
 			exitGracefully(err)
 		}
+
 	case "auth":
 		err := doAuth()
 		if err != nil {
 			exitGracefully(err)
 		}
+
 	case "handler":
 		if arg3 == "" {
 			exitGracefully(errors.New("you must give the handler a name"))
@@ -131,14 +133,25 @@ func doMake(arg2, arg3, arg4 string) error {
 		if err != nil {
 			exitGracefully(err)
 		}
+
 	case "svelte":
 		if arg3 == "" {
-			exitGracefully(errors.New("you must give the Svelte view a name"))
+			exitGracefully(errors.New("you must give the view for the svelte module a name"))
 		}
 		err := doSvelteView(arg3)
 		if err != nil {
 			exitGracefully(err)
 		}
+
+	case "bundleJS":
+		if arg3 == "" {
+			exitGracefully(errors.New("you must give the view for the javacript bundle a name"))
+		}
+		err := doBundleJSView(arg3)
+		if err != nil {
+			exitGracefully(err)
+		}
+
 	case "wshandler":
 		if arg3 == "" {
 			exitGracefully(errors.New("you must give the  a websocket handler a name"))

@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <title>${MOD_NAME} module</title>
-    <base href="/svh/${MOD_NAME}/"/>
+    <base href="/jsb/${MOD_NAME}/"/>
     <link rel="stylesheet" href="/public/assets/css/all.min.css" />
-    <link rel="stylesheet" href="/public/assets/css/bulma.min.css" />
+    <link rel="stylesheet" href="/public/assets/css/pico.min.css" />
     <link
       rel="icon"
       type="image/png"
@@ -13,11 +13,6 @@
     />
     <link rel="stylesheet" href="/public/views/${MOD_NAME}/bundle.css" />
   </head>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-  </style>
   <script src="/public/assets/scripts/pusher.min.js"></script>
   <script src="/public/assets/scripts/sweetalert2.all.min.js"></script>
   <script src="/public/assets/scripts/attention.js"></script>
@@ -65,7 +60,7 @@
     {{ end }}
     document.addEventListener("DOMContentLoaded", function () {
       // Broadcast message
-      fetch("/broadcast-public-message?msg=Svelte%20module%20${MOD_NAME}%20User%20{{.UserID}}")
+      fetch("/broadcast-public-message?msg=JS%20bundle%20${MOD_NAME}%20User%20{{.UserID}}")
       // Cleanup on exist 
       window.addEventListener("beforeunload", function(event) {
         console.log('Destroying module ${MOD_NAME}...')
@@ -85,5 +80,12 @@
     src="/public/views/${MOD_NAME}/bundle.js"
   ></script>
   <body>
+    <header>
+      <h1> Hi this is using a web component defined in Typescript using Lit</h1>
+    </header>
+    <main>
+    <simple-greeting></simple-greeting>
+    <simple-greeting name="Universe"></simple-greeting>
+    </main>
   </body>
 </html>

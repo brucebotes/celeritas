@@ -10,7 +10,7 @@ import (
 	"github.com/fatih/color"
 )
 
-func doSvelteView(modName string) error {
+func doBundleJSView(modName string) error {
 	modName = strings.ToLower(modName)
 	modPath := cel.RootPath + "/views/" + modName
 
@@ -46,7 +46,7 @@ func doSvelteView(modName string) error {
 	}
 
 	// create package.json and run npm install
-	data, err = templateFS.ReadFile("templates/views/npm-packages/svelte.package.json")
+	data, err = templateFS.ReadFile("templates/views/npm-packages/bundleJS.package.json")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -56,37 +56,25 @@ func doSvelteView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFileFromTemplate("templates/views/npm-packages/svelte.tsconfig.json", modPath+"/tsconfig.json")
+	err = copyFileFromTemplate("templates/views/npm-packages/bundleJS.tsconfig.json", modPath+"/tsconfig.json")
 	if err != nil {
 		exitGracefully(err)
 	}
 
 	color.Yellow("\tPlease chdir to views/" + modName + " and run: npm install")
 
-	// install svelte builder
-	data, err = templateFS.ReadFile("templates/views/node-scripts/svelte.esbuild.js")
-	if err != nil {
-		exitGracefully(err)
-	}
-	temp = string(data)
-	temp = strings.ReplaceAll(temp, "${MOD_NAME}", modName)
-	err = copyDataToFile([]byte(temp), modPath+"/esbuild.js")
-	if err != nil {
-		exitGracefully(err)
-	}
-
-	// copy svelte template stubs
+	// copy javascript template stubs
 	err = os.Mkdir(modPath+"/src", 0755)
 	if err != nil {
 		exitGracefully(err)
 	}
-	templates, err := templateFS.ReadDir("templates/views/svelte-scripts/src")
+	templates, err := templateFS.ReadDir("templates/views/bundleJS-scripts/src")
 	if err != nil {
 		exitGracefully(err)
 	}
 	for _, f := range templates {
 		if !f.IsDir() {
-			data, err = templateFS.ReadFile("templates/views/svelte-scripts/src/" + f.Name())
+			data, err = templateFS.ReadFile("templates/views/bundleJS-scripts/src/" + f.Name())
 			if err != nil {
 				exitGracefully(err)
 			}
@@ -103,7 +91,7 @@ func doSvelteView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte-scripts/src/pager", modPath+"/src/pager")
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS-scripts/src/pager", modPath+"/src/pager")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -112,7 +100,7 @@ func doSvelteView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte-scripts/src/pages", modPath+"/src/pages")
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS-scripts/src/pages", modPath+"/src/pages")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -122,28 +110,27 @@ func doSvelteView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte-scripts/public", modPath+"/public")
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS-scripts/public", modPath+"/public")
 	if err != nil {
 		exitGracefully(err)
 	}
 
-	makeSvelteViewsHandler()
+	makeJSBundleViewsHandler()
 
-	color.Yellow("\tYou may execute 'npm run dev' after the 'npm install' to test the svelte config")
 	color.Yellow("\tPlease remember to add the following to your routes.go file")
-	color.Yellow("\ta.get(\"/svh/{module}\", a.Handlers.SvelteViews)")
-	color.Yellow("\ta.get(\"/svh/{module}/*\", a.Handlers.SvelteViews)")
+	color.Yellow("\ta.get(\"/jsb/{module}\", a.Handlers.JSBundleViews)")
+	color.Yellow("\ta.get(\"/jsb/{module}/*\", a.Handlers.JSBundleViews)")
 
 	return nil
 }
 
-func makeSvelteViewsHandler() {
-	fileName := cel.RootPath + "/handlers/svelte-view-handler.go"
+func makeJSBundleViewsHandler() {
+	fileName := cel.RootPath + "/handlers/js-bundle-view-handler.go"
 	if fileExists(fileName) {
 		return
 	}
 
-	err := copyFileFromTemplate("templates/handlers/svelte.handler.go.txt", fileName)
+	err := copyFileFromTemplate("templates/handlers/bundleJS.handler.go.txt", fileName)
 	if err != nil {
 		exitGracefully(err)
 	}

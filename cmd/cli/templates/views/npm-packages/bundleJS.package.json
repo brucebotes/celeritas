@@ -1,0 +1,21 @@
+{
+  "name": "webcomponent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {},
+  "dependencies": {
+    "@types/pusher-js": "^5.1.0",
+    "lit": "^2.5.0",
+    "page": "^1.11.6",
+    "pusher-js": "^7.0.3"
+  },
+  "devDependencies": {
+    "@types/page": "^1.11.5",
+    "@typescript-eslint/eslint-plugin": "^5.8.1",
+    "@typescript-eslint/parser": "^5.8.1",
+    "eslint": "^8.5.0",
+    "tslib": "^2.0.0",
+    "typescript": "^4.5.4"
+  }
+}

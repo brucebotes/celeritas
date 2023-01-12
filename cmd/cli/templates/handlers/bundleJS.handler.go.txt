@@ -11,7 +11,9 @@ func (h *Handlers) JSBundleViews(w http.ResponseWriter, r *http.Request) {
 	err := h.App.BuildJSCSSscript(module, "src/main.ts")
 	if err != nil {
 		h.App.ErrorLog.Println(err)
+		h.App.Session.Put(r.Context(), "error", err.Error())
 	}
+
 	err = h.App.Render.Page(w, r, module+"/index", nil, nil)
 	if err != nil {
 		h.App.ErrorLog.Println(err)

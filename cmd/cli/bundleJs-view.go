@@ -86,12 +86,30 @@ func doBundleJSView(modName string) error {
 			}
 		}
 	}
-	// create the src/pager folder and contents
-	err = os.Mkdir(modPath+"/src/pager", 0755)
+	// create the src/components folder and contents
+	err = os.Mkdir(modPath+"/src/components", 0755)
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS-scripts/src/pager", modPath+"/src/pager")
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS-scripts/src/components", modPath+"/src/components")
+	if err != nil {
+		exitGracefully(err)
+	}
+	// create the src/components/timer folder and contents
+	err = os.Mkdir(modPath+"/src/components/timer", 0755)
+	if err != nil {
+		exitGracefully(err)
+	}
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS-scripts/src/components/timer", modPath+"/src/components/timer")
+	if err != nil {
+		exitGracefully(err)
+	}
+	// create the src/components/controller folder and contents
+	err = os.Mkdir(modPath+"/src/components/controller", 0755)
+	if err != nil {
+		exitGracefully(err)
+	}
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS-scripts/src/components/controller", modPath+"/src/components/controller")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -101,16 +119,6 @@ func doBundleJSView(modName string) error {
 		exitGracefully(err)
 	}
 	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS-scripts/src/pages", modPath+"/src/pages")
-	if err != nil {
-		exitGracefully(err)
-	}
-
-	// create the public folder and contents for the dev environment
-	err = os.Mkdir(modPath+"/public", 0755)
-	if err != nil {
-		exitGracefully(err)
-	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS-scripts/public", modPath+"/public")
 	if err != nil {
 		exitGracefully(err)
 	}

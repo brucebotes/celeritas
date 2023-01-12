@@ -1,14 +1,25 @@
 {
-  "name": "webcomponent",
+  "name": "${MOD_NAME}",
   "version": "1.0.0",
   "private": true,
+  "main": "./src/main.ts",
   "type": "module",
   "scripts": {},
   "dependencies": {
+    "@lit-labs/motion": "^1.0.3",
+    "@lit-labs/router": "^0.1.1",
+    "@material/mwc-button": "^0.27.0",
+    "@material/mwc-checkbox": "^0.27.0",
+    "@material/mwc-drawer": "^0.27.0",
+    "@material/mwc-formfield": "^0.27.0",
+    "@material/mwc-icon-button": "^0.27.0",
+    "@material/mwc-list": "^0.27.0",
+    "@material/mwc-textfield": "^0.27.0",
+    "@material/mwc-top-app-bar": "^0.27.0",
     "@types/pusher-js": "^5.1.0",
     "lit": "^2.5.0",
-    "page": "^1.11.6",
-    "pusher-js": "^7.0.3"
+    "pusher-js": "^7.0.3",
+    "urlpattern-polyfill": "^6.0.2"
   },
   "devDependencies": {
     "@types/page": "^1.11.5",

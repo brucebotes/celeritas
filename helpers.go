@@ -133,7 +133,7 @@ func (c *Celeritas) BuildJSCSSscript(module, src string) error {
 	})
 	if len(result.Errors) > 0 {
 		log.Println("Esbuild errors \u2192", result.Errors)
-		return errors.New("error compiling jsx and css")
+		return errors.New("error generating js and/or css bundle(s)")
 	}
 	ioutil.WriteFile("public/views/"+module+"/meta.json", []byte(result.Metafile), 0644)
 	return nil

@@ -109,11 +109,11 @@ func (e *Encryption) Decrypt(cryptoText string) (string, error) {
 //BuildJScript take a javascript/typescript/react module and compile to esModule
 //Write esModule to file in the static folder
 func (c *Celeritas) BuildJSCSSscript(module, src string) error {
-	if !c.Debug {
+	if !c.BundleJS {
 		return nil
 	}
 	buildPath := c.RootPath + "/views/" + module
-	log.Println("build parh:", buildPath+"/"+src)
+	log.Println("build path:", buildPath+"/"+src)
 	result := api.Build(api.BuildOptions{
 		NodePaths:   []string{buildPath + "/node_modules/"},
 		EntryPoints: []string{buildPath + "/" + src},
@@ -142,7 +142,7 @@ func (c *Celeritas) BuildJSCSSscript(module, src string) error {
 //BuildJScript take a javascript/typescript/react module and compile to esModule
 //Write esModule to file in the static folder
 func (c *Celeritas) BuildWithNpmScript(module string) error {
-	if !c.Debug {
+	if !c.BundleJS {
 		return nil
 	}
 	cmd := exec.Command("npm", "run", "build")
@@ -150,28 +150,32 @@ func (c *Celeritas) BuildWithNpmScript(module string) error {
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		log.Println("Command error 1 compiling Javascript \u2192", err)
+		c.ErrorLog.Println("Command error 1 compiling Javascript \u2192", err)
 		return err
 	}
 	err = cmd.Start()
 	if err != nil {
-		log.Println("Command error 2 compiling Javascript \u2192", err)
+		c.ErrorLog.Println("Command error 2 compiling Javascript \u2192", err)
 		return err
 	}
 
 	data, err := ioutil.ReadAll(stderr)
 	if err != nil {
-		log.Println("Command error 3 compiling Javascript \u2192", err)
+		c.ErrorLog.Println("Command error 3 compiling Javascript \u2192", err)
 		return err
 	}
 	err = cmd.Wait()
 	if err != nil {
-		log.Println("Command error 4 compiling Javascript \u2192", err)
+		c.ErrorLog.Println("Command error 4 compiling Javascript \u2192", err)
 		return err
 	}
 
 	if data != nil && len(data) > 0 {
-		c.ErrorLog.Println(fmt.Printf("Compilng '/views/%s': Error/Warning messages \u2192 \n%s\n", module, string(data)))
+		var errStr string
+		fmt.Sprintf(errStr, "Compilng '/views/%s': Error/Warning messages \u2192 \n%s\n", module, string(data))
+		err = errors.New(errStr)
+		c.ErrorLog.Println(err)
+		return err
 	}
 
 	return nil

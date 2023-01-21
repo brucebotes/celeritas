@@ -46,7 +46,7 @@ func (m *Middleware) CheckRemember(next http.Handler) http.Handler {
 				}
 			}
 		} else {
-			//usert is logged in
+			//user is logged in
 			next.ServeHTTP(w, r)
 		}
 	})

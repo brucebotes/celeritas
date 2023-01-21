@@ -15,5 +15,6 @@ func (h *Handlers) SvelteViews(w http.ResponseWriter, r *http.Request) {
 	err = h.App.Render.Page(w, r, module+"/index", nil, nil)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
+		h.printTemplateError(w, err)
 	}
 }

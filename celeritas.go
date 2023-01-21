@@ -61,6 +61,7 @@ type Celeritas struct {
 	WebDAV        webdavfilesystem.WebDAV
 	Minio         miniofilesystem.Minio
 	wsClient      *pusher.Client
+	BundleJS      bool
 }
 
 type Server struct {
@@ -130,6 +131,7 @@ func (c *Celeritas) New(rootPath string) error {
 	c.InfoLog = infoLog
 	c.ErrorLog = errorLog
 	c.Debug, _ = strconv.ParseBool(os.Getenv("DEBUG"))
+	c.BundleJS, _ = strconv.ParseBool(os.Getenv("BUNDLEJS"))
 	c.Version = version
 	c.RootPath = rootPath
 	c.Routes = c.routes().(*chi.Mux)

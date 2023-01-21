@@ -150,6 +150,12 @@ class ModuleRouter extends LitElement {
   }
 }
 
+declare global {
+  interface HTMLElementTagNameMap {
+    'module-router': ModuleRouter
+  }
+}
+
 @customElement('module-routes')
 class ModuleRoutes extends LitElement {
   static styles = css`
@@ -202,5 +208,11 @@ class ModuleRoutes extends LitElement {
   ])
   render() {
     return html` <div class="body">${this._routes.outlet()}</div> `
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'module-routes': ModuleRoutes
   }
 }

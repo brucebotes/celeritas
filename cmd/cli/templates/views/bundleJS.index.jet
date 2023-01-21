@@ -9,6 +9,8 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/public/ico/favicon-16x16.png">
     <link rel="manifest" href="/public/ico/site.webmanifest">
     <link rel="stylesheet" href="/public/views/${MOD_NAME}/bundle.css" />
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <!--<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>-->
      <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@1,800&display=swap"
       rel="stylesheet"

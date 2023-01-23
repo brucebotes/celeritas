@@ -6,6 +6,7 @@ import (
 	_ "github.com/jackc/pgconn"
 	_ "github.com/jackc/pgx/v4"
 	_ "github.com/jackc/pgx/v4/stdlib"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func (c *Celeritas) OpenDB(dbType, dsn string) (*sql.DB, error) {
@@ -13,6 +14,9 @@ func (c *Celeritas) OpenDB(dbType, dsn string) (*sql.DB, error) {
 		dbType = "pgx"
 	}
 
+	if dbType == "sqlite" {
+		dbType = "sqlite3"
+	}
 	db, err := sql.Open(dbType, dsn)
 	if err != nil {
 		return nil, err

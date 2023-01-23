@@ -10,6 +10,7 @@ import (
 	"github.com/alexedwards/scs/mysqlstore"
 	"github.com/alexedwards/scs/postgresstore"
 	"github.com/alexedwards/scs/redisstore"
+	"github.com/alexedwards/scs/sqlite3store"
 	"github.com/alexedwards/scs/v2"
 	"github.com/gomodule/redigo/redis"
 )
@@ -58,7 +59,25 @@ func (c *Session) InitSession() *scs.SessionManager {
 	case "mysql", "mariadb":
 		session.Store = mysqlstore.New(c.DBPool)
 	case "postgres", "postgresql":
+
 		session.Store = postgresstore.New(c.DBPool)
+	case "sqlite", "sqlite3":
+		/*
+		* --------------------------------------------------
+		* TODO: Please update the sqlite3 database (./system)
+		*		to refect the following
+		* there has been a slight change in the newer version
+		* requirements for sqlite3store.
+		* --------------------------------------------------
+		*    CREATE TABLE sessions (
+		*      token TEXT PRIMARY KEY,
+		*      data BLOB NOT NULL,
+		*      expiry REAL NOT NULL
+		*    );
+		*
+		*    CREATE INDEX sessions_expiry_idx ON sessions(expiry);
+		 */
+		session.Store = sqlite3store.New(c.DBPool)
 	default:
 		// cookie
 	}

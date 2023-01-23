@@ -43,6 +43,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.5.1 // indirect
 	github.com/SparkPost/gosparkpost v0.2.0 // indirect
 	github.com/acomagu/bufpipe v1.0.3 // indirect
+	github.com/alexedwards/scs/sqlite3store v0.0.0-20221223131519-238b052508b6 // indirect
 	github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a // indirect
 	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/aws/aws-sdk-go v1.43.36 // indirect

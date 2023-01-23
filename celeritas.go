@@ -237,7 +237,7 @@ func (c *Celeritas) New(rootPath string) error {
 	switch c.config.sessionType {
 	case "redis":
 		sess.RedisPool = myRedisCache.Conn
-	case "mysql", "postgres", "mariadb", "postgresql":
+	case "mysql", "postgres", "mariadb", "postgresql", "sqlite", "sqlite3":
 		sess.DBPool = c.DB.Pool
 	}
 
@@ -390,6 +390,9 @@ func (c *Celeritas) BuildDSN() string {
 		if os.Getenv("DATABASE_PASS") != "" {
 			dsn = fmt.Sprintf("%s password=%s", dsn, os.Getenv("DATABASE_PASS"))
 		}
+	case "sqlite", "sqlite3":
+		dsn = fmt.Sprintf("%s", os.Getenv("DATABASE_NAME"))
+
 	default:
 	}
 

@@ -16,6 +16,10 @@ func doSessionTable() error {
 		dbType = "postgres"
 	}
 
+	if dbType == "sqlite3" {
+		dbType = "sqlite"
+	}
+
 	fileName := fmt.Sprintf("%d_create_sessions_table", time.Now().UnixMicro())
 
 	upFile := cel.RootPath + "/migrations/" + fileName + "." + dbType + ".up.sql"

@@ -171,8 +171,7 @@ func (c *Celeritas) BuildWithNpmScript(module string) error {
 	}
 
 	if data != nil && len(data) > 0 {
-		var errStr string
-		fmt.Sprintf(errStr, "Compilng '/views/%s': Error/Warning messages \u2192 \n%s\n", module, string(data))
+		errStr := fmt.Sprintf("Compilng '/views/%s': Error/Warning messages \u2192 \n%s\n", module, string(data))
 		err = errors.New(errStr)
 		c.ErrorLog.Println(err)
 		return err

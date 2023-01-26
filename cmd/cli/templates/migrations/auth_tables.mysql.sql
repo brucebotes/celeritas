@@ -5,6 +5,7 @@ CREATE TABLE `users` (
     `first_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
     `last_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
     `user_active` int(11) NOT NULL,
+	  `access_level`	int(10) NOT NULL DEFAULT 3,
     `email` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
     `password` char(60) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
     `created_at` timestamp NULL DEFAULT NULL,

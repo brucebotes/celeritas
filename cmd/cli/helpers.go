@@ -57,6 +57,17 @@ func getDSN() string {
 		}
 		return dsn
 	}
+
+	if dbType == "sqlite" {
+		dbType = "sqlite3"
+	}
+
+	if dbType == "sqlite3" {
+		var dsn string
+		dsn = fmt.Sprintf("%s", os.Getenv("DATABASE_NAME"))
+		return dsn
+	}
+
 	return "mysql://" + cel.BuildDSN()
 }
 

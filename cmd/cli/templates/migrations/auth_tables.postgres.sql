@@ -13,6 +13,7 @@ CREATE TABLE users (
     first_name character varying(255) NOT NULL,
     last_name character varying(255) NOT NULL,
     user_active integer NOT NULL DEFAULT 0,
+	  access_level	integer NOT NULL DEFAULT 3,
     email character varying(255) NOT NULL UNIQUE,
     password character varying(60) NOT NULL,
     created_at timestamp without time zone NOT NULL DEFAULT now(),

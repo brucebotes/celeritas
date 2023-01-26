@@ -24,6 +24,9 @@ func doAuth() error {
 	}
 
 	downBytes := []byte("drop table if exists users cascade; drop table if exists tokens cascade; drop table if exists remember_tokens;")
+	if dbType == "sqlite" || dbType == "sqlite3" {
+		downBytes = []byte("drop table if exists users; drop table if exists tokens; drop table if exists remember_tokens;")
+	}
 
 	err = cel.CreatePopMigration(upBytes, downBytes, "auth", "sql")
 	if err != nil {

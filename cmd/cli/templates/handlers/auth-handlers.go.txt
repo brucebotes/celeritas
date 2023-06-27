@@ -25,7 +25,7 @@ import (
 )
 
 func (h *Handlers) UserLogin(w http.ResponseWriter, r *http.Request) {
-	err := h.App.Render.Page(w, r, "login", nil, nil)
+	err := h.App.Render.Page(w, r, "templates/login", nil, nil)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
 	}
@@ -132,7 +132,7 @@ func (h *Handlers) UserLogout(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) Forgot(w http.ResponseWriter, r *http.Request) {
-	err := h.render(w, r, "forgot", nil, nil)
+	err := h.render(w, r, "templates/forgot", nil, nil)
 	if err != nil {
 		h.App.ErrorLog.Println("Error rendering: ", err)
 		h.App.Error500(w, r)
@@ -224,7 +224,7 @@ func (h *Handlers) ResetPasswordForm(w http.ResponseWriter, r *http.Request) {
 	vars := make(jet.VarMap)
 	vars.Set("email", encryptedEmail)
 
-	err := h.render(w, r, "reset-password", vars, nil)
+	err := h.render(w, r, "templates/reset-password", vars, nil)
 	if err != nil {
 		return
 	}

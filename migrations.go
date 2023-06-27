@@ -18,10 +18,10 @@ import (
 )
 
 func (c *Celeritas) PopConnect() (*pop.Connection, error) {
-	log.Println("Info - Supported migration dialetcs configured are:")
-	for i, d := range pop.AvailableDialects {
-		log.Printf("\tdialect %d = %s", i, d)
-	}
+	//log.Println("Info - Supported migration dialetcs configured are:")
+	//for i, d := range pop.AvailableDialects {
+	//	log.Printf("\tdialect %d = %s", i, d)
+	//}
 
 	tx, err := pop.Connect("development")
 	if err != nil {

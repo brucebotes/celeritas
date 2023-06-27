@@ -15,7 +15,7 @@ func doCacheApi() error {
 		exitGracefully(err)
 	}
 
-	err = copyFileFromTemplate("templates/views/cache.jet", cel.RootPath+"/views/cache.jet")
+	err = copyFileFromTemplate("templates/views/templates/cache.jet", cel.RootPath+"/views/templates/cache.jet")
 	if err != nil {
 		exitGracefully(err)
 	}

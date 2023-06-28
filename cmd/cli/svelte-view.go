@@ -34,7 +34,7 @@ func doSvelteView(modName string) error {
 
 	// copy jet template
 	color.Yellow("\tCreating index.jet file...")
-	data, err := templateFS.ReadFile("templates/views/bundleJS.index.jet")
+	data, err := templateFS.ReadFile("templates/views/svelte/index.jet")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -46,7 +46,7 @@ func doSvelteView(modName string) error {
 	}
 
 	// create package.json and run npm install
-	data, err = templateFS.ReadFile("templates/views/npm-packages/svelte.package.json")
+	data, err = templateFS.ReadFile("templates/views/svelte/npm-packages/package.json")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -56,7 +56,7 @@ func doSvelteView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFileFromTemplate("templates/views/npm-packages/svelte.tsconfig.json", modPath+"/tsconfig.json")
+	err = copyFileFromTemplate("templates/views/svelte/npm-packages/tsconfig.json", modPath+"/tsconfig.json")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -64,7 +64,7 @@ func doSvelteView(modName string) error {
 	color.Yellow("\tPlease chdir to views/" + modName + " and run: npm install")
 
 	// install svelte builder
-	data, err = templateFS.ReadFile("templates/views/node-scripts/svelte.esbuild.js")
+	data, err = templateFS.ReadFile("templates/views/svelte/node-scripts/svelte.esbuild.js")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -80,13 +80,13 @@ func doSvelteView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	templates, err := templateFS.ReadDir("templates/views/svelte-scripts/src")
+	templates, err := templateFS.ReadDir("templates/views/svelte/source/src")
 	if err != nil {
 		exitGracefully(err)
 	}
 	for _, f := range templates {
 		if !f.IsDir() {
-			data, err = templateFS.ReadFile("templates/views/svelte-scripts/src/" + f.Name())
+			data, err = templateFS.ReadFile("templates/views/svelte/source/src/" + f.Name())
 			if err != nil {
 				exitGracefully(err)
 			}
@@ -103,7 +103,7 @@ func doSvelteView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte-scripts/src/pager", modPath+"/src/pager")
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte/source/src/pager", modPath+"/src/pager")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -112,7 +112,7 @@ func doSvelteView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte-scripts/src/pages", modPath+"/src/pages")
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte/source/src/pages", modPath+"/src/pages")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -122,7 +122,7 @@ func doSvelteView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte-scripts/public", modPath+"/public")
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte/source/public", modPath+"/public")
 	if err != nil {
 		exitGracefully(err)
 	}

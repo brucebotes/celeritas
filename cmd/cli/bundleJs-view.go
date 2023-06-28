@@ -34,7 +34,7 @@ func doBundleJSView(modName string) error {
 
 	// copy jet template
 	color.Yellow("\tCreating index.jet file...")
-	data, err := templateFS.ReadFile("templates/views/bundleJS.index.jet")
+	data, err := templateFS.ReadFile("templates/views/bundleJS/index.jet")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -46,7 +46,7 @@ func doBundleJSView(modName string) error {
 	}
 
 	// create package.json and run npm install
-	data, err = templateFS.ReadFile("templates/views/npm-packages/bundleJS.package.json")
+	data, err = templateFS.ReadFile("templates/views/bundleJS/npm-packages/package.json")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -56,7 +56,7 @@ func doBundleJSView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFileFromTemplate("templates/views/npm-packages/bundleJS.tsconfig.json", modPath+"/tsconfig.json")
+	err = copyFileFromTemplate("templates/views/bundleJS/npm-packages/tsconfig.json", modPath+"/tsconfig.json")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -68,13 +68,13 @@ func doBundleJSView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	templates, err := templateFS.ReadDir("templates/views/bundleJS-scripts/src")
+	templates, err := templateFS.ReadDir("templates/views/bundleJS/source/src")
 	if err != nil {
 		exitGracefully(err)
 	}
 	for _, f := range templates {
 		if !f.IsDir() {
-			data, err = templateFS.ReadFile("templates/views/bundleJS-scripts/src/" + f.Name())
+			data, err = templateFS.ReadFile("templates/views/bundleJS/source/src/" + f.Name())
 			if err != nil {
 				exitGracefully(err)
 			}
@@ -91,7 +91,7 @@ func doBundleJSView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS-scripts/src/components", modPath+"/src/components")
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS/source/src/components", modPath+"/src/components")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -100,7 +100,7 @@ func doBundleJSView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS-scripts/src/components/timer", modPath+"/src/components/timer")
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS/source/src/components/timer", modPath+"/src/components/timer")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -109,7 +109,7 @@ func doBundleJSView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS-scripts/src/components/controller", modPath+"/src/components/controller")
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS/source/src/components/controller", modPath+"/src/components/controller")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -118,7 +118,7 @@ func doBundleJSView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS-scripts/src/pages", modPath+"/src/pages")
+	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS/source/src/pages", modPath+"/src/pages")
 	if err != nil {
 		exitGracefully(err)
 	}

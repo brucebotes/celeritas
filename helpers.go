@@ -132,7 +132,9 @@ func (c *Celeritas) BuildJSCSSscript(module, src string) error {
 		TreeShaking: api.TreeShakingTrue,
 	})
 	if len(result.Errors) > 0 {
-		log.Println("Esbuild errors \u2192", result.Errors)
+		for i, m := range result.Errors {
+			log.Printf("Esbuild error %d: %s:%d %s\n", i, m.Location.File, m.Location.Line, m.Text)
+		}
 		return errors.New("error generating js and/or css bundle(s)")
 	}
 	ioutil.WriteFile("public/views/"+module+"/meta.json", []byte(result.Metafile), 0644)
@@ -171,6 +173,7 @@ func (c *Celeritas) BuildWithNpmScript(module string) error {
 	}
 
 	if data != nil && len(data) > 0 {
+		log.Printf("%+v\n", data)
 		errStr := fmt.Sprintf("Compilng '/views/%s': Error/Warning messages \u2192 \n%s\n", module, string(data))
 		err = errors.New(errStr)
 		c.ErrorLog.Println(err)

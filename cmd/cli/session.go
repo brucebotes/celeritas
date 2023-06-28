@@ -1,12 +1,15 @@
 package main
 
 import (
-	"fmt"
-	"time"
 )
 
 func doSessionTable() error {
 	dbType := cel.DB.DataType
+	tx, err := cel.PopConnect()
+	if err != nil {
+		exitGracefully(err)
+	}
+	defer tx.Close()
 
 	if dbType == "mariadb" {
 		dbType = "mysql"
@@ -20,6 +23,7 @@ func doSessionTable() error {
 		dbType = "sqlite"
 	}
 
+	/*
 	fileName := fmt.Sprintf("%d_create_sessions_table", time.Now().UnixMicro())
 
 	upFile := cel.RootPath + "/migrations/" + fileName + "." + dbType + ".up.sql"
@@ -36,6 +40,24 @@ func doSessionTable() error {
 	}
 
 	err = doMigrate("up", "")
+	if err != nil {
+		exitGracefully(err)
+	}
+	*/
+
+	upBytes, err := templateFS.ReadFile("templates/migrations/"+dbType+"_session.sql")
+	if err != nil {
+		exitGracefully(err)
+	}
+	downBytes := []byte("drop table if exists sessions;")
+
+	err = cel.CreatePopMigration(upBytes, downBytes, "sessions", "sql")
+	if err != nil {
+		exitGracefully(err)
+	}
+
+	// run migrations
+	err = cel.RunPopMigrations(tx)
 	if err != nil {
 		exitGracefully(err)
 	}

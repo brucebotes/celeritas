@@ -16,6 +16,7 @@ func (c *Celeritas) ListenAndServe() error {
 		IdleTimeout:  30 * time.Second,
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 600 * time.Second,
+		TLSConfig:    c.Server.TLSConfig,
 	}
 
 	if c.DB.Pool != nil {
@@ -33,5 +34,9 @@ func (c *Celeritas) ListenAndServe() error {
 	go c.listenRPC()
 
 	c.InfoLog.Printf("Listening on port %s", os.Getenv("PORT"))
-	return srv.ListenAndServe()
+	if c.Server.Secure != true || c.Server.TLSConfig == nil {
+		return srv.ListenAndServe()
+	} else {
+		return srv.ListenAndServeTLS("","")
+	}
 }

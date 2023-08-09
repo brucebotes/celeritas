@@ -1,6 +1,7 @@
 package celeritas
 
 import (
+	"crypto/tls"
 	"fmt"
 	"log"
 	"net"
@@ -31,11 +32,13 @@ import (
 
 const version = "1.0.0"
 
-var myRedisCache *cache.RedisCache
-var myBadgerCache *cache.BadgerCache
-var redisPool *redis.Pool
-var badgerConn *badger.DB
-var maintenanceMode bool
+var (
+	myRedisCache    *cache.RedisCache
+	myBadgerCache   *cache.BadgerCache
+	redisPool       *redis.Pool
+	badgerConn      *badger.DB
+	maintenanceMode bool
+)
 
 type Celeritas struct {
 	AppName       string
@@ -69,6 +72,7 @@ type Server struct {
 	Port       string
 	Secure     bool
 	URL        string
+	TLSConfig     *tls.Config
 }
 
 type config struct {
@@ -88,7 +92,6 @@ type uploadConfig struct {
 }
 
 func (c *Celeritas) New(rootPath string) error {
-
 	pathConfig := initPaths{
 		rootPath: rootPath,
 		folderNames: []string{
@@ -245,13 +248,13 @@ func (c *Celeritas) New(rootPath string) error {
 	c.EncryptionKey = os.Getenv("KEY")
 
 	if c.Debug {
-		var views = jet.NewSet(
+		views := jet.NewSet(
 			jet.NewOSFileSystemLoader(fmt.Sprintf("%s/views", rootPath)),
 			jet.InDevelopmentMode(),
 		)
 		c.JetViews = views
 	} else {
-		var views = jet.NewSet(
+		views := jet.NewSet(
 			jet.NewOSFileSystemLoader(fmt.Sprintf("%s/views", rootPath)),
 		)
 		c.JetViews = views
@@ -511,4 +514,21 @@ func (c *Celeritas) listenRPC() {
 			go rpc.ServeConn(rpcConn)
 		}
 	}
+}
+
+func (c *Celeritas) SetTLSCertificate(cert string, key string) error {
+	crt, err := tls.LoadX509KeyPair(
+		cert,
+		key,
+	)
+	if err != nil {
+		return err
+	}
+	c.Server.TLSConfig = &tls.Config{
+		Certificates:       []tls.Certificate{crt},
+		ServerName:         c.Server.ServerName,
+		//InsecureSkipVerify: true,
+	}
+	//c.InfoLog.Printf("cert \u2192 %+v\n", c.Server.TLSConfig)
+	return nil
 }

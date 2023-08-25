@@ -44,7 +44,7 @@ func (v *Validation) Required(r *http.Request, fields ...string) {
 	for _, field := range fields {
 		value := r.Form.Get(field)
 		if strings.TrimSpace(value) == "" {
-			v.AddError(field, "This fiels cannot be blank")
+			v.AddError(field, "This field cannot be blank")
 		}
 
 	}

@@ -1,4 +1,16 @@
 create_table("some_table") {
-  t.Column("id", "integer", {primary: true})
+  t.Column("id", "uuid", {primary: true})
   t.Column("some_column", "string", {"size": 255})
 }
+
+
+sql("alter table some_table alter column id set default gen_random_uuid();")
+sql("alter table some_table alter column created_at set default now();")
+sql("alter table some_table alter column updated_at set default now();")
+
+sql(`CREATE TRIGGER set_timestamp
+    BEFORE UPDATE ON some_table 
+    FOR EACH ROW
+    EXECUTE PROCEDURE trigger_set_timestamp();
+`)
+

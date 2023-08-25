@@ -6,7 +6,7 @@ import (
 )
 // $MODELNAME$ struct
 type $MODELNAME$ struct {
-    ID        int       `db:"id,omitempty"`
+    ID        string    `db:"id,omitempty"`
     CreatedAt time.Time `db:"created_at"`
     UpdatedAt time.Time `db:"updated_at"`
 }
@@ -31,7 +31,7 @@ func (t *$MODELNAME$) GetAll(condition up.Cond) ([]*$MODELNAME$, error) {
 }
 
 // Get gets one record from the database, by id, using upper
-func (t *$MODELNAME$) Get(id int) (*$MODELNAME$, error) {
+func (t *$MODELNAME$) Get(id string) (*$MODELNAME$, error) {
     var one $MODELNAME$
     collection := upper.Collection(t.Table())
 
@@ -47,7 +47,7 @@ func (t *$MODELNAME$) Get(id int) (*$MODELNAME$, error) {
 func (t *$MODELNAME$) Update(m $MODELNAME$) error {
     m.UpdatedAt = time.Now()
     collection := upper.Collection(t.Table())
-    res := collection.Find(m.ID)
+    res := collection.Find(up.Cond{"id =": m.ID})
     err := res.Update(&m)
     if err != nil {
         return err
@@ -56,9 +56,9 @@ func (t *$MODELNAME$) Update(m $MODELNAME$) error {
 }
 
 // Delete deletes a record from the database by id, using upper
-func (t *$MODELNAME$) Delete(id int) error {
+func (t *$MODELNAME$) Delete(id string) error {
     collection := upper.Collection(t.Table())
-    res := collection.Find(id)
+    res := collection.Find(up.Cond{"id =": id})
     err := res.Delete()
     if err != nil {
         return err
@@ -67,13 +67,13 @@ func (t *$MODELNAME$) Delete(id int) error {
 }
 
 // Insert inserts a model into the database, using upper
-func (t *$MODELNAME$) Insert(m $MODELNAME$) (int, error) {
+func (t *$MODELNAME$) Insert(m $MODELNAME$) (string, error) {
     m.CreatedAt = time.Now()
     m.UpdatedAt = time.Now()
     collection := upper.Collection(t.Table())
     res, err := collection.Insert(m)
     if err != nil {
-        return 0, err
+        return "", err
     }
 
     id := getInsertID(res.ID())
@@ -82,7 +82,7 @@ func (t *$MODELNAME$) Insert(m $MODELNAME$) (int, error) {
 }
 
 // Builder is an example of using upper's sql builder
-func (t *$MODELNAME$) Builder(id int) ([]*$MODELNAME$, error) {
+func (t *$MODELNAME$) Builder(id string) ([]*$MODELNAME$, error) {
     collection := upper.Collection(t.Table())
 
     var result []*$MODELNAME$
@@ -90,7 +90,7 @@ func (t *$MODELNAME$) Builder(id int) ([]*$MODELNAME$, error) {
     err := collection.Session().
         SQL().
         SelectFrom(t.Table()).
-        Where("id > ?", id).
+        Where("id = ?", id).
         OrderBy("id").
         All(&result)
     if err != nil {

@@ -1,5 +1,5 @@
 -- CREATE TABLE some_table (
---     id serial PRIMARY KEY,
+--     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 --     some_field VARCHAR ( 255 ) NOT NULL,
 --     created_at TIMESTAMP,
 --     updated_at TIMESTAMP

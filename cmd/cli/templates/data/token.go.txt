@@ -13,15 +13,15 @@ import (
 )
 
 type Token struct {
-	ID        int       `db:"id,omitempty" json:"id"`
-	UserID    int       `db:"user_id" json:"user_id"`
-	FirstName string    `db:"first_name" json:"first_name"`
-	Email     string    `db:"email" json:"email"`
-	PlainText string    `db:"token" json:"token"`
-	Hash      []byte    `db:"token_hash" json:"-"`
-	CreatedAt time.Time `db:"created_at" json:"created_at"`
-	UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
-	Expires   time.Time `db:"expiry" json:"expiry"`
+	ID        string    `db:"id,omitempty" json:"id"`
+	UserID    string    `db:"user_id"      json:"user_id"`
+	FirstName string    `db:"first_name"   json:"first_name"`
+	Email     string    `db:"email"        json:"email"`
+	PlainText string    `db:"token"        json:"token"`
+	Hash      []byte    `db:"token_hash"   json:"-"`
+	CreatedAt time.Time `db:"created_at"   json:"created_at"`
+	UpdatedAt time.Time `db:"updated_at"   json:"updated_at"`
+	Expires   time.Time `db:"expiry"       json:"expiry"`
 }
 
 func (t *Token) Table() string {
@@ -110,7 +110,7 @@ func (t *Token) DeleteByToken(plainText string) error {
 func (t *Token) Insert(token Token, u User) error {
 	collection := upper.Collection(t.Table())
 
-	//delete existing tokens
+	// delete existing tokens
 	res := collection.Find(up.Cond{"user_id": u.ID})
 	err := res.Delete()
 	if err != nil {
@@ -130,7 +130,7 @@ func (t *Token) Insert(token Token, u User) error {
 	return nil
 }
 
-func (t *Token) GenerateToken(userID int, ttl time.Duration) (*Token, error) {
+func (t *Token) GenerateToken(userID string, ttl time.Duration) (*Token, error) {
 	token := &Token{
 		UserID:  userID,
 		Expires: time.Now().UTC().Add(ttl),
@@ -144,7 +144,7 @@ func (t *Token) GenerateToken(userID int, ttl time.Duration) (*Token, error) {
 
 	token.PlainText = base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(randomBytes)
 	hash := sha256.Sum256([]byte(token.PlainText))
-	token.Hash = hash[:] //convert the hash to an array
+	token.Hash = hash[:] // convert the hash to an array
 
 	return token, nil
 }
@@ -199,4 +199,3 @@ func (t *Token) ValidToken(token string) (bool, error) {
 
 	return true, nil
 }
-

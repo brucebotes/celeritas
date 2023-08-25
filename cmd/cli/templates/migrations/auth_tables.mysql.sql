@@ -1,3 +1,4 @@
+-- THE ID's FIELDS MUST BE CONVERTED TO UUID TO BE COMPATIBLE WITH CELERITAS - SEE POSTGRES
 drop table if exists users cascade;
 
 CREATE TABLE `users` (

@@ -9,7 +9,7 @@ $$ LANGUAGE plpgsql;
 drop table if exists users cascade;
 
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     first_name character varying(255) NOT NULL,
     last_name character varying(255) NOT NULL,
     user_active integer NOT NULL DEFAULT 0,
@@ -28,8 +28,8 @@ CREATE TRIGGER set_timestamp
 drop table if exists remember_tokens;
 
 CREATE TABLE remember_tokens (
-    id SERIAL PRIMARY KEY,
-    user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     remember_token character varying(100) NOT NULL,
     created_at timestamp without time zone NOT NULL DEFAULT now(),
     updated_at timestamp without time zone NOT NULL DEFAULT now()
@@ -43,8 +43,8 @@ CREATE TRIGGER set_timestamp
 drop table if exists tokens;
 
 CREATE TABLE tokens (
-    id SERIAL PRIMARY KEY,
-    user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     first_name character varying(255) NOT NULL,
     email character varying(255) NOT NULL,
     token character varying(255) NOT NULL,

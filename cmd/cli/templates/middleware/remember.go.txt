@@ -2,9 +2,8 @@ package middleware
 
 import (
 	"fmt"
-	"myapp/data"
+	"back-celeritas/data"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -25,8 +24,7 @@ func (m *Middleware) CheckRemember(next http.Handler) http.Handler {
 					// cookie has some data, so validate it
 					split := strings.Split(key, "|")
 					uid, hash := split[0], split[1]
-					id, _ := strconv.Atoi(uid)
-					validHash := u.CheckForRememberToken(id, hash)
+					validHash := u.CheckForRememberToken(uid, hash)
 					if !validHash {
 						m.deleteRememberCookie(w, r)
 						// inform the user
@@ -34,7 +32,7 @@ func (m *Middleware) CheckRemember(next http.Handler) http.Handler {
 						next.ServeHTTP(w, r)
 					} else {
 						// valid hash, so log the user in
-						user, _ := u.Get(id)
+						user, _ := u.Get(uid)
 						m.App.Session.Put(r.Context(), "userID", user.ID)
 						m.App.Session.Put(r.Context(), "remember_token", hash)
 						next.ServeHTTP(w, r)

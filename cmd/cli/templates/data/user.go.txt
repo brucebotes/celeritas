@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/brucebotes/celeritas"
+	"github.com/google/uuid"
 	up "github.com/upper/db/v4"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -123,6 +124,7 @@ func (u *User) Insert(theUser User) (string, error) {
 		return "", err
 	}
 
+	theUser.ID = uuid.New().String()
 	theUser.CreatedAt = time.Now()
 	theUser.UpdatedAt = time.Now()
 	theUser.Password = string(newHash)
@@ -133,9 +135,7 @@ func (u *User) Insert(theUser User) (string, error) {
 		return "", err
 	}
 
-	id := getInsertID(res.ID())
-
-	return id, nil
+	return theUser.ID, nil
 }
 
 func (u *User) ResetPassword(id string, password string) error {

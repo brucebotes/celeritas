@@ -1,6 +1,7 @@
 package data
 
 import (
+	  "github.com/google/uuid"
     up "github.com/upper/db/v4"
     "time"
 )
@@ -68,6 +69,7 @@ func (t *$MODELNAME$) Delete(id string) error {
 
 // Insert inserts a model into the database, using upper
 func (t *$MODELNAME$) Insert(m $MODELNAME$) (string, error) {
+	  m.ID = uuid.New().String()
     m.CreatedAt = time.Now()
     m.UpdatedAt = time.Now()
     collection := upper.Collection(t.Table())
@@ -76,9 +78,7 @@ func (t *$MODELNAME$) Insert(m $MODELNAME$) (string, error) {
         return "", err
     }
 
-    id := getInsertID(res.ID())
-
-    return id, nil
+    return m.ID, nil
 }
 
 // Builder is an example of using upper's sql builder

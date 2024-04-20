@@ -31,7 +31,7 @@ func (a *application) UtilityRoutes() http.Handler {
 				return
 			}
 
-			fmt.Fprintf(w, "%d: %s", id, u.FirstName)
+			fmt.Fprintf(w, "%s: %s", id, u.FirstName)
 		})
 
 		r.Get("/get-all-users", func(w http.ResponseWriter, r *http.Request) {
@@ -47,7 +47,7 @@ func (a *application) UtilityRoutes() http.Handler {
 		})
 
 		r.Get("/get-user/{id}", func(w http.ResponseWriter, r *http.Request) {
-			id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+			id := chi.URLParam(r, "id")
 			user, err := a.Models.Users.Get(id)
 			if err != nil {
 				a.App.ErrorLog.Println(err)
@@ -58,7 +58,7 @@ func (a *application) UtilityRoutes() http.Handler {
 		})
 
 		r.Get("/update-user/{id}", func(w http.ResponseWriter, r *http.Request) {
-			id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+			id := chi.URLParam(r, "id")
 			u, err := a.Models.Users.Get(id)
 			if err != nil {
 				a.App.ErrorLog.Println(err)

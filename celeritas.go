@@ -30,7 +30,7 @@ import (
 	"github.com/robfig/cron/v3"
 )
 
-const version = "2.0.0"
+const version = "2.0.1"
 
 var (
 	myRedisCache    *cache.RedisCache
@@ -72,7 +72,7 @@ type Server struct {
 	Port       string
 	Secure     bool
 	URL        string
-	TLSConfig     *tls.Config
+	TLSConfig  *tls.Config
 }
 
 type config struct {
@@ -525,8 +525,8 @@ func (c *Celeritas) SetTLSCertificate(cert string, key string) error {
 		return err
 	}
 	c.Server.TLSConfig = &tls.Config{
-		Certificates:       []tls.Certificate{crt},
-		ServerName:         c.Server.ServerName,
+		Certificates: []tls.Certificate{crt},
+		ServerName:   c.Server.ServerName,
 		//InsecureSkipVerify: true,
 	}
 	//c.InfoLog.Printf("cert \u2192 %+v\n", c.Server.TLSConfig)

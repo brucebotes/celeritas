@@ -23,6 +23,7 @@ func (t *$MODELNAME$) GetAll(condition up.Cond) ([]*$MODELNAME$, error) {
     var all []*$MODELNAME$
 
     res := collection.Find(condition)
+    defer res.Close()
     err := res.All(&all)
     if err != nil {
         return nil, err
@@ -37,6 +38,7 @@ func (t *$MODELNAME$) Get(id string) (*$MODELNAME$, error) {
     collection := upper.Collection(t.Table())
 
     res := collection.Find(up.Cond{"id": id})
+    defer res.Close()
     err := res.One(&one)
     if err != nil {
         return nil, err
@@ -49,6 +51,7 @@ func (t *$MODELNAME$) Update(m $MODELNAME$) error {
     m.UpdatedAt = time.Now()
     collection := upper.Collection(t.Table())
     res := collection.Find(up.Cond{"id =": m.ID})
+    defer res.Close()
     err := res.Update(&m)
     if err != nil {
         return err
@@ -60,6 +63,7 @@ func (t *$MODELNAME$) Update(m $MODELNAME$) error {
 func (t *$MODELNAME$) Delete(id string) error {
     collection := upper.Collection(t.Table())
     res := collection.Find(up.Cond{"id =": id})
+    defer res.Close()
     err := res.Delete()
     if err != nil {
         return err

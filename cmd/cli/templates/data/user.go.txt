@@ -39,6 +39,7 @@ func (u *User) GetAll() ([]*User, error) {
 	var all []*User
 
 	res := collection.Find().OrderBy("last_name")
+  defer res.Close()
 	err := res.All(&all)
 	if err != nil {
 		return nil, err
@@ -56,10 +57,12 @@ func (u *User) GetByEmail(email string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+  res.Close()
 
 	var token Token
 	collection = upper.Collection(token.Table())
 	res = collection.Find(up.Cond{"user_id =": theUser.ID, "expiry >": time.Now()}).OrderBy("created_at desc")
+  defer res.Close()
 	err = res.One(&token)
 	if err != nil {
 		if err != up.ErrNilRecord && err != up.ErrNoMoreRows {
@@ -76,15 +79,18 @@ func (u *User) Get(id string) (*User, error) {
 	var theUser User
 	collection := upper.Collection(u.Table())
 	res := collection.Find(up.Cond{"id =": id})
+  defer res.Close()
 
 	err := res.One(&theUser)
 	if err != nil {
 		return nil, err
 	}
+  res.Close()
 
 	var token Token
 	collection = upper.Collection(token.Table())
 	res = collection.Find(up.Cond{"user_id =": theUser.ID, "expiry >": time.Now()}).OrderBy("created_at desc")
+  defer res.Close()
 	err = res.One(&token)
 	if err != nil {
 		if err != up.ErrNilRecord && err != up.ErrNoMoreRows {
@@ -101,6 +107,7 @@ func (u *User) Update(theUser User) error {
 	theUser.UpdatedAt = time.Now()
 	collection := upper.Collection(u.Table())
 	res := collection.Find(up.Cond{"id =": theUser.ID})
+  defer res.Close()
 	err := res.Update(&theUser)
 	if err != nil {
 		return err
@@ -111,6 +118,7 @@ func (u *User) Update(theUser User) error {
 func (u *User) Delete(id string) error {
 	collection := upper.Collection(u.Table())
 	res := collection.Find(up.Cond{"id =": id})
+  defer res.Close()
 	err := res.Delete()
 	if err != nil {
 		return err
@@ -181,6 +189,7 @@ func (u *User) CheckForRememberToken(id string, token string) bool {
 	rt := RememberToken{}
 	collection := upper.Collection(rt.Table())
 	res := collection.Find(up.Cond{"user_id": id, "remember_token": token})
+  defer res.Close()
 	err := res.One(&rememberToken)
 	return err == nil
 }

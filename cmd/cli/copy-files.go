@@ -43,7 +43,7 @@ func fileExists(fileToCheck string) bool {
 	return true
 }
 
-func copyFromTemplatreFolderToDestinationFolder(templatePath, destPath string) error {
+func copyFromTemplateFolderToDestinationFolder(templatePath, destPath string) error {
 	templates, err := templateFS.ReadDir(templatePath)
 	if err != nil {
 		return err

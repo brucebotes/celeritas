@@ -103,7 +103,7 @@ func doSvelteView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte/source/src/pager", modPath+"/src/pager")
+	err = copyFromTemplateFolderToDestinationFolder("templates/views/svelte/source/src/pager", modPath+"/src/pager")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -112,7 +112,7 @@ func doSvelteView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte/source/src/pages", modPath+"/src/pages")
+	err = copyFromTemplateFolderToDestinationFolder("templates/views/svelte/source/src/pages", modPath+"/src/pages")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -122,7 +122,7 @@ func doSvelteView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/svelte/source/public", modPath+"/public")
+	err = copyFromTemplateFolderToDestinationFolder("templates/views/svelte/source/public", modPath+"/public")
 	if err != nil {
 		exitGracefully(err)
 	}

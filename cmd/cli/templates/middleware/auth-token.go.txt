@@ -8,7 +8,7 @@ func (m *Middleware) AuthToken(next http.Handler) http.Handler {
 		if err != nil {
 			var payload struct {
 				Error   bool   `json:"error"`
-				Message string `json::message"`
+				Message string `json:"message"`
 			}
 			payload.Error = true
 			payload.Message = "invalid authentication credentials"

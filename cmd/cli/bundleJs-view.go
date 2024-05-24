@@ -91,7 +91,7 @@ func doBundleJSView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS/source/src/components", modPath+"/src/components")
+	err = copyFromTemplateFolderToDestinationFolder("templates/views/bundleJS/source/src/components", modPath+"/src/components")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -100,7 +100,7 @@ func doBundleJSView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS/source/src/components/timer", modPath+"/src/components/timer")
+	err = copyFromTemplateFolderToDestinationFolder("templates/views/bundleJS/source/src/components/timer", modPath+"/src/components/timer")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -109,7 +109,7 @@ func doBundleJSView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS/source/src/components/controller", modPath+"/src/components/controller")
+	err = copyFromTemplateFolderToDestinationFolder("templates/views/bundleJS/source/src/components/controller", modPath+"/src/components/controller")
 	if err != nil {
 		exitGracefully(err)
 	}
@@ -118,7 +118,7 @@ func doBundleJSView(modName string) error {
 	if err != nil {
 		exitGracefully(err)
 	}
-	err = copyFromTemplatreFolderToDestinationFolder("templates/views/bundleJS/source/src/pages", modPath+"/src/pages")
+	err = copyFromTemplateFolderToDestinationFolder("templates/views/bundleJS/source/src/pages", modPath+"/src/pages")
 	if err != nil {
 		exitGracefully(err)
 	}

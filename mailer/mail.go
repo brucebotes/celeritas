@@ -98,7 +98,8 @@ func (m *Mail) SendUsingApi(msg Message, transport string) error {
 		URL:         m.APIUrl,
 		APIKey:      m.APIKey,
 		Domain:      m.Domain,
-		FromAddress: msg.FromName,
+		FromAddress: msg.From,
+		FromName:    msg.FromName,
 	}
 
 	driver, err := apimail.NewClient(transport, cfg)

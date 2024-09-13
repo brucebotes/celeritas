@@ -22,33 +22,12 @@
         font-family: 'Roboto', sans-siref;
       }
     </style>
-    <script src="/public/assets/scripts/pusher.min.js"></script>
     <script src="/public/assets/scripts/sweetalert2.all.min.js"></script>
     <script src="/public/assets/scripts/attention.js"></script>
     <script>
       {{ try }}
-      const pusher = new Pusher("{{.WebSocket.Key}}", {
-        authEndpoint: '{{.WebSocket.AuthEndPoint}}',
-        wsHost: "{{.WebSocket.Host}}",
-        wsPort: "{{.WebSocket.Port}}",
-        forceTLS: {{.WebSocket.Secure}},
-        enabledTransports: ['ws', 'wss'],
-        disabledTransports: []
-      })
-
-      // NB. private and public channels must begin with "private-" and "public-" respectively
-      const publicChannel = pusher.subscribe('public-channel')
-      const privateChannel = pusher.subscribe("private-channel-{{.UserID}}")
-
-      // listen to websocket message
-      publicChannel.bind("public-message", (data)=> {
-        console.log("Public message", data)
-        attention.toast({icon: 'success', msg: data.msg})
-      })
 
       window.__INITIAL_DATA__ = {
-        privateChannel: privateChannel,
-        publicChannel: publicChannel,
         token: '{{ .CSRFToken }}',
         attention: Prompt(),
         {{ try }}
@@ -58,28 +37,15 @@
         {{ end }}
       }
       {{ catch }}
-      const publicChannel = undefined
-      const privateChannel = undefined
       window.__INITIAL_DATA__ = {
-        privateChannel: privateChannel,
-        publicChannel: publicChannel,
         token: '{{ .CSRFToken }}',
         attention: Prompt()
       }  
       {{ end }}
       document.addEventListener("DOMContentLoaded", function () {
-        // Broadcast message
-        fetch("/broadcast-public-message?msg=JS%20bundle%20${MOD_NAME}%20User%20{{.UserID}}")
         // Cleanup on exist 
         window.addEventListener("beforeunload", function(event) {
           console.log('Destroying module ${MOD_NAME}...')
-           //publish exist 
-         if(privateChannel) {
-           privateChannel.trigger(
-             'client-module-exit', // For privateChannel message must start with "client-",
-            '${MOD_NAME}' 
-           )
-         }
         })
       })
     </script>

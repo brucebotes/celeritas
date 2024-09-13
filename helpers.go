@@ -10,13 +10,10 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"os/exec"
-	"strconv"
 
 	"github.com/evanw/esbuild/pkg/api"
-	"github.com/pusher/pusher-http-go"
 )
 
 const (
@@ -183,34 +180,4 @@ func (c *Celeritas) BuildWithNpmScript(module string) error {
 	return nil
 }
 
-func (c *Celeritas) AuthenticateWebsocket(userID int, userName string, params []byte) ([]byte, error) {
 
-	presenceData := pusher.MemberData{
-		UserID: strconv.Itoa(userID),
-		UserInfo: map[string]string{
-			"name": "FirstName",
-			"id":   strconv.Itoa(userID),
-		},
-	}
-
-	response, err := c.wsClient.AuthenticatePresenceChannel(params, presenceData)
-	return response, err
-}
-
-func (c *Celeritas) ListenForWebsocketEvents(r *http.Request, buff []byte) (*pusher.Webhook, error) {
-	webhook, err := c.wsClient.Webhook(r.Header, buff)
-	if err != nil {
-		return nil, err
-	}
-	return webhook, err
-}
-
-func (c *Celeritas) BroadcastWebsocketMessage(channel, messageType string, data interface{}) error {
-	err := c.wsClient.Trigger(channel, messageType, data)
-	if err != nil {
-		c.ErrorLog.Println("Websocket broadcast error: " + err.Error())
-		return err
-	}
-
-	return nil
-}

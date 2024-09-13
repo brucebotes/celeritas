@@ -18,7 +18,6 @@
     "@material/mwc-top-app-bar": "^0.27.0",
     "@types/pusher-js": "^5.1.0",
     "lit": "^2.5.0",
-    "pusher-js": "^7.0.3",
     "urlpattern-polyfill": "^6.0.2"
   },
   "devDependencies": {

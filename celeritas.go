@@ -26,7 +26,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/gomodule/redigo/redis"
 	"github.com/joho/godotenv"
-	"github.com/pusher/pusher-http-go"
 	"github.com/robfig/cron/v3"
 )
 
@@ -63,7 +62,6 @@ type Celeritas struct {
 	SFTP          sftpfilesystem.SFTP
 	WebDAV        webdavfilesystem.WebDAV
 	Minio         miniofilesystem.Minio
-	wsClient      *pusher.Client
 	BundleJS      bool
 }
 
@@ -154,11 +152,6 @@ func (c *Celeritas) New(rootPath string) error {
 		maxUploadSize = int64(max)
 	}
 
-	wssecure := true
-	if strings.ToLower(os.Getenv("WEBSOCKET_SECURE")) == "false" {
-		wssecure = false
-	}
-
 	c.config = config{
 		port:     os.Getenv("PORT"),
 		renderer: os.Getenv("RENDERER"),
@@ -182,14 +175,6 @@ func (c *Celeritas) New(rootPath string) error {
 		uploads: uploadConfig{
 			maxUploadSize:    maxUploadSize,
 			allowedMimeTypes: mimeTypes,
-		},
-		webSocket: webSockConfig{
-			secret:       os.Getenv("WEBSOCKET_SECRET"),
-			key:          os.Getenv("WEBSOCKET_KEY"),
-			host:         os.Getenv("WEBSOCKET_HOST"),
-			port:         os.Getenv("WEBSOCKET_PORT"),
-			authEndPoint: os.Getenv("WEBSOCKET_AUTH_END_POINT"),
-			secure:       wssecure,
 		},
 	}
 
@@ -260,9 +245,6 @@ func (c *Celeritas) New(rootPath string) error {
 		c.JetViews = views
 	}
 
-	websocket := c.createWebSocket()
-	c.wsClient = websocket.Init("1")
-	c.createRenderer(websocket)
 	c.FileSystems = c.createFileSystems()
 
 	go c.Mail.ListenForMail()

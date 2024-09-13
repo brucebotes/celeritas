@@ -101,7 +101,6 @@ func showHelp() {
 	make session                     - creates a table in the database as a session store
 	make mail <mail>                 - create two starter mail templates in the mail directory
 	make bundleJS <name>             - creates a new jet template with bundled javascript ESM integration in the views folder with <name>
-	make sharedobj                   - creates the shared folder in views and copies common global javascript objetcs for use all js modules
 	make cacheapi                    - creates the handlers and api routes for the cache (Redis or Badger) with a cache.jet test template 
 	`)
 }

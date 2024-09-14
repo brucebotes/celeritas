@@ -243,6 +243,7 @@ func (c *Celeritas) New(rootPath string) error {
 		c.JetViews = views
 	}
 
+  c.createRenderer()
 	c.FileSystems = c.createFileSystems()
 
 	go c.Mail.ListenForMail()

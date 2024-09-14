@@ -443,19 +443,6 @@ func (c *Celeritas) createFileSystems() map[string]interface{} {
 	return fileSystems
 }
 
-func (c *Celeritas) createWebSocket() *websocket.WebSocket {
-	webSock := websocket.WebSocket{
-		Secret:       c.config.webSocket.secret,
-		Key:          c.config.webSocket.key,
-		Host:         c.config.webSocket.host,
-		Port:         c.config.webSocket.port,
-		AuthEndPoint: c.config.webSocket.authEndPoint,
-		Secure:       c.config.webSocket.secure,
-	}
-
-	return &webSock
-}
-
 type RPCServer struct{}
 
 // Note for RPC calls we have to have a function that returns an error

@@ -10,7 +10,6 @@ import (
 
 	"github.com/CloudyKit/jet/v6"
 	"github.com/alexedwards/scs/v2"
-	"github.com/brucebotes/celeritas/websocket"
 	"github.com/justinas/nosurf"
 )
 
@@ -22,7 +21,6 @@ type Render struct {
 	ServerName string
 	JetViews   *jet.Set
 	Session    *scs.SessionManager
-	WebSocket  *websocket.WebSocket
 }
 
 type TemplateData struct {
@@ -37,8 +35,6 @@ type TemplateData struct {
 	Secure          bool
 	Error           string
 	Flash           string
-	WebSocket       *websocket.WebSocket
-	UserID          int
 }
 
 func (c *Render) defaultData(td *TemplateData, r *http.Request) *TemplateData {
@@ -48,12 +44,10 @@ func (c *Render) defaultData(td *TemplateData, r *http.Request) *TemplateData {
 	td.CSRFToken = nosurf.Token(r)
 	if c.Session.Exists(r.Context(), "userID") {
 		td.IsAuthenticated = true
-		td.UserID = c.Session.GetInt(r.Context(), "userID")
 	}
 	// Get the Error and Flash messages from the session
 	td.Error = c.Session.PopString(r.Context(), "error")
 	td.Flash = c.Session.PopString(r.Context(), "flash")
-	td.WebSocket = c.WebSocket
 
 	return td
 }

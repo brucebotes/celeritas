@@ -21,7 +21,6 @@ import (
 	"github.com/brucebotes/celeritas/mailer"
 	"github.com/brucebotes/celeritas/render"
 	"github.com/brucebotes/celeritas/session"
-	"github.com/brucebotes/celeritas/websocket"
 	"github.com/dgraph-io/badger/v3"
 	"github.com/go-chi/chi/v5"
 	"github.com/gomodule/redigo/redis"
@@ -81,7 +80,6 @@ type config struct {
 	database    databaseConfig
 	redis       redisConfig
 	uploads     uploadConfig
-	webSocket   webSockConfig
 }
 
 type uploadConfig struct {
@@ -284,14 +282,13 @@ func (c *Celeritas) startLoggers() (*log.Logger, *log.Logger) {
 	return infoLog, errorLog
 }
 
-func (c *Celeritas) createRenderer(websocket *websocket.WebSocket) {
+func (c *Celeritas) createRenderer() {
 	myRenderer := render.Render{
 		Renderer:  c.config.renderer,
 		RootPath:  c.RootPath,
 		Port:      c.config.port,
 		JetViews:  c.JetViews,
 		Session:   c.Session,
-		WebSocket: websocket,
 	}
 	c.Render = &myRenderer
 }

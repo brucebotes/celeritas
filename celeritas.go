@@ -28,7 +28,7 @@ import (
 	"github.com/robfig/cron/v3"
 )
 
-const version = "0.1.1"
+const version = "1.1.4"
 
 var (
 	myRedisCache    *cache.RedisCache

@@ -28,7 +28,7 @@ import (
 	"github.com/robfig/cron/v3"
 )
 
-const version = "0.0.7"
+const version = "0.1.1"
 
 var (
 	myRedisCache    *cache.RedisCache
@@ -288,6 +288,7 @@ func (c *Celeritas) createRenderer() {
 		Renderer:  c.config.renderer,
 		RootPath:  c.RootPath,
 		Port:      c.config.port,
+    TemplateData: render.TemplateData{},
 		JetViews:  c.JetViews,
 		Session:   c.Session,
 	}

@@ -20,6 +20,7 @@ type Render struct {
 	Port       string
 	ServerName string
 	JetViews   *jet.Set
+  TemplateData TemplateData
 	Session    *scs.SessionManager
 }
 
@@ -75,6 +76,7 @@ func (c *Render) GoPage(w http.ResponseWriter, r *http.Request, view string, dat
 	if data != nil {
 		td = data.(*TemplateData)
 	}
+	td = c.defaultData(td, r)
 
 	err = tmpl.Execute(w, td)
 	if err != nil {

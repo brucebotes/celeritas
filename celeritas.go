@@ -288,7 +288,6 @@ func (c *Celeritas) createRenderer() {
 		Renderer:  c.config.renderer,
 		RootPath:  c.RootPath,
 		Port:      c.config.port,
-    TemplateData: render.TemplateData{},
 		JetViews:  c.JetViews,
 		Session:   c.Session,
 	}

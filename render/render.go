@@ -20,7 +20,6 @@ type Render struct {
 	Port       string
 	ServerName string
 	JetViews   *jet.Set
-  TemplateData TemplateData
 	Session    *scs.SessionManager
 }
 
@@ -66,6 +65,16 @@ func (c *Render) Page(w http.ResponseWriter, r *http.Request, view string, varia
 }
 
 // GoPage renders a template using the Go templating engine
+// Note: this function cannot reference other templates (or fragments) 
+//       relative to it self( as is the case of jet templates)
+//       Thus it is most suited to SPA which do not require
+//       multiple pages with the same header or footers templates
+//       that are re-used.
+//      ( ie header/footer components templates that are shared )
+//
+//      The generic data is passed via the TemplateData struct. 
+//      Which is available in the Celeritas and Render structs
+//      as pointers fields.
 func (c *Render) GoPage(w http.ResponseWriter, r *http.Request, view string, data interface{}) error {
 	tmpl, err := template.ParseFiles(fmt.Sprintf("%s/views/%s.page.tmpl", c.RootPath, view))
 	if err != nil {
@@ -87,6 +96,14 @@ func (c *Render) GoPage(w http.ResponseWriter, r *http.Request, view string, dat
 }
 
 // JetPage renders a template using the Jet templating engine
+// Note: The jet templates can receive their data to be rendered
+//      via the variables and/or data structuers. 
+//      - The variables structure is the *jet.VarMaps struct defined 
+//        by jet.
+//      - The data structure uses the generic data is passed via the 
+//        TemplateData struct. 
+//        Which is available in the Celeritas and Render structs
+//        as pointers fields.
 func (c *Render) JetPage(w http.ResponseWriter, r *http.Request, templateName string, variables, data interface{}) error {
 	var vars jet.VarMap
 

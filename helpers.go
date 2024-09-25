@@ -19,6 +19,10 @@ import (
 const (
 	randomString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321_+"
 )
+func (c *Celeritas) SetAppDebug(debug bool){
+  c.Debug = debug
+  c.Render.SetDebug(debug)
+}
 
 //RandomString  generates a random string length n from values in the const randomString
 func (c *Celeritas) RandomString(n int) string {

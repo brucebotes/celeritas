@@ -21,10 +21,12 @@ type Render struct {
 	ServerName string
 	JetViews   *jet.Set
 	Session    *scs.SessionManager
+  Debug       bool
 }
 
 type TemplateData struct {
 	IsAuthenticated bool
+  IsDebug         bool
 	IntMap          map[string]int
 	StringMap       map[string]string
 	FloatMap        map[string]float32
@@ -38,6 +40,7 @@ type TemplateData struct {
 }
 
 func (c *Render) defaultData(td *TemplateData, r *http.Request) *TemplateData {
+  td.IsDebug  = c.Debug
 	td.Secure = c.Secure
 	td.ServerName = c.ServerName
 	td.Port = c.Port
@@ -131,4 +134,8 @@ func (c *Render) JetPage(w http.ResponseWriter, r *http.Request, templateName st
 		return err
 	}
 	return nil
+}
+
+func(c *Render) SetDebug(debug bool) {
+  c.Debug = debug
 }

@@ -142,3 +142,9 @@ func (b *BadgerCache) emptyByMatch(str string) error {
 
 	return err
 }
+
+// TODO; implement GetKeys for Badger
+func (b *BadgerCache) GetKeys(pattern string) ([]string, error) {
+	s_keys := []string{}
+	return s_keys, nil
+}

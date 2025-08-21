@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
+	"sort"
+	"strings"
 
 	"github.com/gomodule/redigo/redis"
 )
@@ -15,6 +17,7 @@ type Cache interface {
 	Forget(string) error
 	EmptyByMatch(string) error
 	Empty() error
+  GetKeys(string) ([]string, error)
 }
 
 type RedisCache struct {
@@ -182,4 +185,17 @@ func (c *RedisCache) getKeys(pattern string) ([]string, error) {
 	}
 
 	return keys, nil
+}
+
+func (c *RedisCache) GetKeys(pattern string) ([]string, error) {
+	prefixed_pattern := fmt.Sprintf("%s:%s", c.Prefix, pattern)
+	keys, err := c.getKeys(prefixed_pattern)
+	s_keys := []string{}
+	for _, k := range keys {
+		s_keys = append(s_keys, strings.TrimPrefix(k, c.Prefix+":"))
+	}
+	sort.Slice(s_keys, func(i, j int) bool {
+		return s_keys[i] > s_keys[j]
+	})
+	return s_keys, err
 }
